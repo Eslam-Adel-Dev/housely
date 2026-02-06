@@ -1,112 +1,157 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+// map imports
+import {
+  Camera,
+  MapView,
+  MarkerView,
+  UserLocation,
+} from "@maplibre/maplibre-react-native";
+// react imports
+import { useEffect, useState } from "react";
+// images imports
+import HomeGreen from "@/assets/icons/homepage-green-icon.svg";
+import HomeRed from "@/assets/icons/homepage-red-icon.svg";
+import MapPin from "@/assets/icons/map-pin-icon.svg";
+import NoLocationImage from "@/assets/images/NoLocation.svg";
+// location permission
+import * as Location from "expo-location";
+// react native imports
+import { Alert, Text, View } from "react-native";
+// components imports
+import CustomButton from "@/components/CustomButton";
+import ScreenWrapper from "@/components/ScreenWrapper";
+// toast import
+import TitleBar from "@/components/layout/TitleBar";
+import Toast from "react-native-toast-message";
+//=========================================================
 
-import { Collapsible } from '@/components/ui/collapsible';
-import { ExternalLink } from '@/components/external-link';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Fonts } from '@/constants/theme';
+const Explore = () => {
+  const [selectedPoint, setSelectedPoint] = useState<number[] | null>(null);
+  const [selectedPlace, setSelectedPlace] = useState<number[] | null>(null);
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
+  const [gpsLocation, setGpsLocation] = useState<
+    Location.LocationObject | number[] | null
+  >(null);
 
-export default function TabTwoScreen() {
+  const showToast = (message: string) => {
+    Toast.show({
+      type: "error",
+      text1: message,
+    });
+  };
+
+  //-------------------------------------------
+
+  const getCurrentLocation = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      showToast("Permission to access location was denied");
+      Alert.alert("Permission to access location was denied");
+      return;
+    }
+    const location = await Location.getCurrentPositionAsync();
+    console.log(location);
+
+    if (!location) {
+      return;
+    }
+
+    setGpsLocation(location);
+    setLatitude(location.coords.latitude);
+    setLongitude(location.coords.longitude);
+  };
+
+  useEffect(() => {
+    getCurrentLocation();
+  }, []);
+
+  //-------------------------------------------
+
+  if (!gpsLocation && !latitude && !longitude) {
+    return (
+      <ScreenWrapper className="flex-1 ">
+        <TitleBar title="Explore" />
+        <View className="flex-1 items-center justify-center">
+          <NoLocationImage size={100} />
+          <View className="w-full items-center justify-center gap-3 my-10">
+            <Text className="font-bold text-2xl text-center">
+              Hi, Nice to meet you !
+            </Text>
+            <View className="px-12">
+              <Text className="text-md text-zinc-400 text-center">
+                Choose your location to find property around you
+              </Text>
+            </View>
+          </View>
+          <View className="w-full gap-3">
+            <CustomButton
+              className="rounded-lg"
+              textClassName="text-white"
+              onButtonPress={getCurrentLocation}
+            >
+              Use current location
+            </CustomButton>
+            <CustomButton
+              className="rounded-lg bg-white border border-primary-600"
+              textClassName="text-primary-600"
+              onButtonPress={() => {
+                setLatitude(30.0444);
+                setLongitude(31.2357);
+              }}
+            >
+              Select it manually
+            </CustomButton>
+          </View>
+        </View>
+      </ScreenWrapper>
+    );
+  }
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText
-          type="title"
-          style={{
-            fontFamily: Fonts.rounded,
-          }}>
-          Explore
-        </ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image
-          source={require('@/assets/images/react-logo.png')}
-          style={{ width: 100, height: 100, alignSelf: 'center' }}
-        />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful{' '}
-          <ThemedText type="defaultSemiBold" style={{ fontFamily: Fonts.mono }}>
-            react-native-reanimated
-          </ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
-  );
-}
+    <MapView
+      style={{ flex: 1 }}
+      onPress={(e: any) => {
+        setSelectedPoint(e.geometry.coordinates);
+      }}
+      mapStyle={{
+        version: 8,
+        sources: {
+          osm: {
+            type: "raster",
+            tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
+            tileSize: 256,
+          },
+        },
+        layers: [
+          {
+            id: "osm",
+            type: "raster",
+            source: "osm",
+          },
+        ],
+      }}
+    >
+      <Camera centerCoordinate={[longitude, latitude]} zoomLevel={16} />
+      <UserLocation />
 
-const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-});
+      {/* selected point */}
+      {selectedPoint && (
+        <MarkerView coordinate={selectedPoint}>
+          <MapPin width={30} height={30} />
+        </MarkerView>
+      )}
+
+      {/* unavailable properties */}
+      <MarkerView coordinate={[31.2, 30]}>
+        <HomeRed width={30} height={30} />
+      </MarkerView>
+
+      {/* available properties */}
+      <MarkerView coordinate={[35.2, 25]}>
+        <HomeGreen width={30} height={30} />
+      </MarkerView>
+    </MapView>
+  );
+};
+
+export default Explore;

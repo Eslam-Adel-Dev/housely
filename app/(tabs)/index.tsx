@@ -1,98 +1,164 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+// react native imports
+import { useState } from "react";
+import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+// icons imports
+import chat from "@/assets/icons/Chat.png";
+import location from "@/assets/icons/Location.png";
+import notification from "@/assets/icons/Notification.png";
 
-export default function HomeScreen() {
+// components imports
+import ScreenWrapper from "@/components/ScreenWrapper";
+import SearchComp from "@/components/SearchComp";
+import AdSection from "@/components/homeScreen/AdSection";
+import Filter from "@/components/homeScreen/Filter";
+import PropertyCard2 from "@/components/homeScreen/PropertyCard2";
+
+// images imports
+import building from "@/assets/images/building.png";
+import PropertyCard from "@/components/homeScreen/PropertyCard";
+
+// dummy data imports
+import { filtersData, properties } from "@/data/data";
+
+// expo imports
+import { useRouter } from "expo-router";
+
+// flashlist imports
+import { FlashList } from "@shopify/flash-list";
+//===================================================================
+
+const Index = () => {
+  const [selectedFilter, setSelectedFilter] = useState(1);
+  const router = useRouter();
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+    <ScrollView>
+      <ScreenWrapper className="bg-[#fcfcfd] gap-8">
+        {/* ---------------------------------- */}
+        <View className="flex-row items-center justify-between">
+          <View className="flex-row items-center gap-2">
+            <Image source={location} className="size-7" resizeMode="contain" />
+            <Text className="text-lg font-bold">Yogyakarta, Ind</Text>
+          </View>
+          <View className="flex-row items-center gap-2">
+            <TouchableOpacity className="border border-zinc-300 rounded-full p-3">
+              <RedDot />
+              <Image source={notification} resizeMode="contain" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              className="border border-zinc-300 rounded-full p-3"
+              onPress={() => router.push("/chat")}
+            >
+              <RedDot />
+              <Image source={chat} resizeMode="contain" />
+            </TouchableOpacity>
+          </View>
+        </View>
+        {/* ---------------------------------- */}
+        <SearchComp />
+        {/* ---------------------------------- */}
+
+        <AdSection
+          mainText="GET YOUR 20% CASHBACK"
+          subText="*Expired 25 Aug 2022"
+          image={building}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
+        {/* ---------------------------------- */}
+        <View className="flex-row items-center justify-between">
+          <Text className="text-xl font-bold">Recommended</Text>
+          <Text className="text-primary-400 text-md font-semibold">
+            See All
+          </Text>
+        </View>
+        <FlashList
+          data={properties}
+          renderItem={({ item }) => (
+            <PropertyCard {...item} image={item.images[0]} />
+          )}
+          horizontal={true}
+          keyExtractor={(item) => item.id.toString()}
+          ItemSeparatorComponent={() => <View className="w-4" />}
+          showsHorizontalScrollIndicator={false}
+        />
+        {/* ---------------------------------- */}
+        <View className="flex-row items-center justify-between">
+          <Text className="text-xl font-bold">Top Locations</Text>
+          <Text className="text-primary-400 text-md font-semibold">
+            See All
+          </Text>
+        </View>
+        <FlashList
+          data={filtersData}
+          renderItem={({ item }) => (
+            <Filter
+              {...item}
+              setSelectedFilter={setSelectedFilter}
+              selectedFilter={selectedFilter}
             />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+          )}
+          horizontal={true}
+          keyExtractor={(item) => item.id.toString()}
+          ItemSeparatorComponent={() => <View className="w-4" />}
+          showsHorizontalScrollIndicator={false}
+        />
+        {/* ---------------------------------- */}
+        <View className="flex-row items-center justify-between">
+          <Text className="text-xl font-bold">Popular Properties</Text>
+          <Text className="text-primary-400 text-md font-semibold">
+            See All
+          </Text>
+        </View>
+        <FlashList
+          data={properties}
+          renderItem={({ item }) => (
+            <PropertyCard {...item} image={item.images[0]} />
+          )}
+          horizontal={true}
+          keyExtractor={(item) => item.id.toString()}
+          ItemSeparatorComponent={() => <View className="w-4" />}
+          showsHorizontalScrollIndicator={false}
+        />
+        {/* ---------------------------------- */}
+        <View className="flex-row items-center justify-between">
+          <Text className="text-xl font-bold">Nearby</Text>
+          <Text className="text-primary-400 text-md font-semibold">
+            See All
+          </Text>
+        </View>
+        <FlashList
+          data={properties}
+          renderItem={({ item }) => (
+            <PropertyCard2 {...item} image={item.images[0]} />
+          )}
+          horizontal={true}
+          keyExtractor={(item) => item.id.toString()}
+          ItemSeparatorComponent={() => <View className="w-4" />}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingRight: 20 }}
+        />
+        {/* ---------------------------------- */}
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        <FlashList
+          data={properties}
+          renderItem={({ item }) => (
+            <PropertyCard2 {...item} image={item.images[0]} />
+          )}
+          horizontal={true}
+          keyExtractor={(item) => item.id.toString()}
+          ItemSeparatorComponent={() => <View className="w-4" />}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingRight: 20 }}
+        />
+      </ScreenWrapper>
+    </ScrollView>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
+export default Index;
+
+const RedDot = () => {
+  return (
+    <View className="absolute top-0 right-0 bg-red-500 rounded-full size-3"></View>
+  );
+};
