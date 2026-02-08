@@ -186,48 +186,47 @@ export const ProfileScreenOptions = [
 
 //=========================================================
 
-export const users = [
-  {
-    _id: 1,
-    name: "You",
-    image: "https://i.pravatar.cc/150?img=1",
-    lastMessage: "Nice To Meet You , Eslam",
-    messageTime: new Date(Date.now() - 1000 * 60 * 15),
-  },
-  {
+export const users = {
+  alice: {
     _id: 2,
     name: "Alice",
+    lastMessage: "Hey, how are you?",
+    messageTime: new Date("2026-02-07T05:28:00Z"),
     image: "https://i.pravatar.cc/150?img=2",
-    lastMessage: "Nice To Meet You , Eslam",
-    messageTime: new Date(Date.now() - 1000 * 60 * 15),
   },
-  {
+  bob: {
     _id: 3,
     name: "Bob",
+    lastMessage: "See you tomorrow!",
+    messageTime: new Date("2026-02-06T18:45:00Z"),
     image: "https://i.pravatar.cc/150?img=3",
-    lastMessage: "Nice To Meet You , Eslam",
-    messageTime: new Date(Date.now() - 1000 * 60 * 15),
   },
-  {
-    _id: 4,
-    name: "Support Bot",
-    image: "https://i.pravatar.cc/150?img=5",
-    lastMessage: "Nice To Meet You , Eslam",
-    messageTime: new Date(Date.now() - 1000 * 60 * 15),
-  },
-  {
+  eslam: {
     _id: 5,
     name: "Eslam",
+    lastMessage: "Thanks for the help!",
+    messageTime: new Date("2026-02-07T04:15:00Z"),
     image: "https://i.pravatar.cc/150?img=6",
-    lastMessage: "Nice To Meet You , Eslam",
-    messageTime: new Date(Date.now() - 1000 * 60 * 15),
   },
-];
-
+  me: {
+    _id: 1,
+    name: "You",
+    lastMessage: "Got it, will do.",
+    messageTime: new Date("2026-02-07T05:20:00Z"),
+    image: "https://i.pravatar.cc/150?img=1",
+  },
+  support: {
+    _id: 4,
+    name: "Support Bot",
+    lastMessage: "How can we assist you?",
+    messageTime: new Date("2026-02-07T03:30:00Z"),
+    image: "https://i.pravatar.cc/150?img=5",
+  },
+};
 //=========================================================
 
 export const conversations = {
-  general: [
+  [users.alice._id]: [
     {
       _id: "g-1",
       text: "Hey! Did you push the latest changes?",
@@ -254,7 +253,7 @@ export const conversations = {
     },
   ],
 
-  project_alpha: [
+  [users.bob._id]: [
     {
       _id: "a-1",
       text: "Daily sync: blockers?",
@@ -287,7 +286,39 @@ export const conversations = {
     },
   ],
 
-  support_chat: [
+  [users.support._id]: [
+    {
+      _id: "s-1",
+      text: "Welcome to support! How can I help you today?",
+      createdAt: new Date(Date.now() - 1000 * 60 * 60),
+      user: users.support,
+    },
+    {
+      _id: "s-2",
+      text: "My app crashes when I open the profile screen.",
+      createdAt: new Date(Date.now() - 1000 * 60 * 62),
+      user: users.me,
+    },
+    {
+      _id: "s-3",
+      text: "Sorry about that! What device are you using?",
+      createdAt: new Date(Date.now() - 1000 * 60 * 63),
+      user: users.support,
+    },
+    {
+      _id: "s-4",
+      text: "iPhone 14, iOS 17.",
+      createdAt: new Date(Date.now() - 1000 * 60 * 65),
+      user: users.me,
+    },
+    {
+      _id: "s-5",
+      text: "Thanks! We’re investigating this issue now.",
+      createdAt: new Date(Date.now() - 1000 * 60 * 67),
+      user: users.support,
+    },
+  ],
+  [users.eslam._id]: [
     {
       _id: "s-1",
       text: "Welcome to support! How can I help you today?",
