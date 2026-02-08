@@ -20,3 +20,17 @@ export const avgPropertyRatingFunction = (arr: Review[]) => {
 };
 
 //=============================================
+
+export const formatChatTime = (messageTime: string | number | Date): string => {
+  const date = new Date(messageTime);
+  const today = new Date();
+  const isToday = date.toDateString() === today.toDateString();
+
+  const currentFormattedTime =
+    date.toLocaleTimeString([], { hour12: true }).slice(0, 4) +
+    date.toLocaleTimeString([], { hour12: true }).slice(7, 10);
+
+  return isToday
+    ? currentFormattedTime
+    : `${date.toLocaleDateString()} ${currentFormattedTime}`;
+};
