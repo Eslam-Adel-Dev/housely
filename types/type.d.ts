@@ -90,6 +90,21 @@ export interface Agent {
   phone: string;
 }
 
+export interface User {
+  _id: number;
+  name: string;
+  lastMessage: string;
+  messageTime: Date;
+  image: string;
+}
+
+export interface NotificationProps {
+  id: number;
+  text: string;
+  createdAt: Date;
+  type: "message" | "system" | "personal";
+}
+
 export interface Property {
   id: string;
   name: string;
