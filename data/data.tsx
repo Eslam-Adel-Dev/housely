@@ -567,3 +567,44 @@ export const properties = [
     ],
   },
 ];
+
+//==============================================
+export const notifications = [
+  {
+    id: 3,
+    text: "Please complete your profile",
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
+    type: "system",
+  },
+  {
+    id: 4,
+    text: "Start your day with a quote",
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24),
+    type: "personal",
+  },
+  {
+    id: 5,
+    text: "New property listed",
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24),
+    type: "property",
+  },
+  {
+    id: 8,
+    text: "New message from Omar",
+    createdAt: new Date(Date.now() - 1000 * 60 * 10),
+    type: "message",
+  },
+
+  {
+    id: 14,
+    text: "New notification from the system",
+    createdAt: new Date(Date.now() - 1000 * 60 * 22),
+    type: "system",
+  },
+  {
+    id: 15,
+    text: "New property listed",
+    createdAt: new Date(Date.now() - 1000 * 60 * 24),
+    type: "property",
+  },
+];
