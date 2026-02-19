@@ -1,3 +1,12 @@
+// types
+
+export type size = {
+  width: number;
+  height: number;
+};
+
+// interfaces
+
 export interface screenWrapperProps {
   children: React.ReactNode;
   className?: string;
@@ -103,6 +112,20 @@ export interface NotificationProps {
   text: string;
   createdAt: Date;
   type: "message" | "system" | "personal";
+}
+
+export interface ActionSheetProps {
+  visible: boolean;
+  onClose: () => void;
+  onPickImage: () => void;
+  onPickVideo: () => void;
+  onPickPdf?: () => void;
+}
+
+export interface ImagePreviewProps {
+  uri?: string;
+  visible: boolean;
+  onClose: () => void;
 }
 
 export interface Property {
