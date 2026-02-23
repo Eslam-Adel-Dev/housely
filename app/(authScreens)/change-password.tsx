@@ -7,14 +7,11 @@ import ScreenWrapper from "@/components/ScreenWrapper";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 // expo imports
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 // react native imports
-import { Image, Text, TouchableOpacity, View } from "react-native";
-import CheckboxWithLabel from "@/components/CheckboxWithLabel";
 import CustomButton from "@/components/CustomButton";
+import { Text, TouchableOpacity, View } from "react-native";
 //images imports
-import facebook_logo from "@/assets/images/facebook-logo.png";
-import google_logo from "@/assets/images/google-logo.png";
 
 //=========================================================
 
@@ -59,7 +56,7 @@ const Login = () => {
             placeholder="Password"
             onFocus={() => setNewPassword(true)}
             onBlur={() => setNewPassword(false)}
-            className={`${newPassword ? "border-primary-600 border-[1.5px]" : "border-zinc-300"} ${styles.textInput}`}
+            className={`${newPassword ? "border-primary-600 border-[1.5px]" : "border-zinc-300 "} ${styles.textInput} placeholder:text-zinc-400 text-zinc-600`}
           />
         </View>
         <View className="flex gap-2 mb-5">
@@ -78,7 +75,7 @@ const Login = () => {
             placeholder="Password"
             onFocus={() => setConfirmPassword(true)}
             onBlur={() => setConfirmPassword(false)}
-            className={`${confirmPassword ? "border-primary-600 border-[1.5px]" : "border-zinc-300"} ${styles.textInput}`}
+            className={`${confirmPassword ? "border-primary-600 border-[1.5px]" : "border-zinc-300"} ${styles.textInput} placeholder:text-zinc-400 text-zinc-600`}
           />
         </View>
       </View>

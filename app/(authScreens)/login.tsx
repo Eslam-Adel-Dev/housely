@@ -9,9 +9,9 @@ import { Label } from "@/components/ui/label";
 // expo imports
 import { Link, useRouter } from "expo-router";
 // react native imports
-import { Image, Text, TouchableOpacity, View } from "react-native";
 import CheckboxWithLabel from "@/components/CheckboxWithLabel";
 import CustomButton from "@/components/CustomButton";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 //images imports
 import facebook_logo from "@/assets/images/facebook-logo.png";
 import google_logo from "@/assets/images/google-logo.png";
@@ -55,7 +55,7 @@ const Login = () => {
             placeholder="Email"
             onFocus={() => setFocusedEmail(true)}
             onBlur={() => setFocusedEmail(false)}
-            className={`${focusedEmail ? "border-primary-600 border-[1.5px]" : "border-zinc-300"} ${styles.textInput}`}
+            className={`${focusedEmail ? "border-primary-600 border-[1.5px]" : "border-zinc-300"} ${styles.textInput} placeholder:text-zinc-400 text-zinc-600`}
           />
         </View>
         <View className="flex gap-2 mb-5">
@@ -74,7 +74,7 @@ const Login = () => {
             placeholder="Password"
             onFocus={() => setFocusedPassword(true)}
             onBlur={() => setFocusedPassword(false)}
-            className={`${focusedPassword ? "border-primary-600 border-[1.5px]" : "border-zinc-300"} ${styles.textInput}`}
+            className={`${focusedPassword ? "border-primary-600 border-[1.5px]" : "border-zinc-300"} ${styles.textInput} placeholder:text-zinc-400 text-zinc-600`}
           />
         </View>
         <View className="flex-row items-center justify-between">
@@ -115,7 +115,7 @@ const Login = () => {
       {/* ---------------------------------- */}
       <View>
         <Text className="text-zinc-400 text-center">
-          Don't have an account ?{" "}
+          Dont have an account ?{" "}
           <Link href="/register" className="text-primary-600">
             Sign Up
           </Link>
