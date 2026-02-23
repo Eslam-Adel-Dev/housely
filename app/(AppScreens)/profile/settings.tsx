@@ -71,7 +71,7 @@ const Settings = () => {
               placeholder="Username"
               onFocus={() => setFocusedUsername(true)}
               onBlur={() => setFocusedUsername(false)}
-              className={`${focusedUsername ? "border-primary-600 border-[1.5px]" : "border-zinc-300"} ${styles.textInput}`}
+              className={`${focusedUsername ? "border-primary-600 border-[1.5px]" : "border-zinc-300"} ${styles.textInput} placeholder:text-zinc-400 text-zinc-600`}
             />
           </View>
           <View className="flex gap-2 mb-5">
@@ -90,7 +90,7 @@ const Settings = () => {
               placeholder="Email"
               onFocus={() => setFocusedEmail(true)}
               onBlur={() => setFocusedEmail(false)}
-              className={`${focusedEmail ? "border-primary-600 border-[1.5px]" : "border-zinc-300"} ${styles.textInput}`}
+              className={`${focusedEmail ? "border-primary-600 border-[1.5px]" : "border-zinc-300"} ${styles.textInput} placeholder:text-zinc-400 text-zinc-600`}
             />
           </View>
           <View className="flex gap-2 mb-5">
@@ -105,7 +105,7 @@ const Settings = () => {
               placeholder="2023-10-10"
               onFocus={() => setFocusedDate(true)}
               onBlur={() => setFocusedDate(false)}
-              className={`${focusedDate ? "border-primary-600 border-[1.5px]" : "border-zinc-300"} ${styles.textInput}`}
+              className={`${focusedDate ? "border-primary-600 border-[1.5px]" : "border-zinc-300"} ${styles.textInput} placeholder:text-zinc-400 text-zinc-600`}
             />
           </View>
         </View>
