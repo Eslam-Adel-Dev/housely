@@ -42,7 +42,10 @@ const Index = () => {
             <Text className="text-lg font-bold">Yogyakarta, Ind</Text>
           </View>
           <View className="flex-row items-center gap-2">
-            <TouchableOpacity className="border border-zinc-300 rounded-full p-3">
+            <TouchableOpacity
+              className="border border-zinc-300 rounded-full p-3"
+              onPress={() => router.push("/notifications")}
+            >
               <RedDot />
               <Image source={notification} resizeMode="contain" />
             </TouchableOpacity>
