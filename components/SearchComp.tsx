@@ -14,7 +14,7 @@ const SearchComp = () => {
         textContentType="name"
         autoComplete="name"
         placeholder="Search Here..."
-        className="border-0 shadow-none outline-none flex-1"
+        className="border-0 shadow-none outline-none flex-1 placeholder:text-zinc-400 text-zinc-600"
       />
       <TouchableOpacity>
         <Filter size={20} />
