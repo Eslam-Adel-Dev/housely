@@ -8,15 +8,16 @@ import { useRouter } from "expo-router";
 interface TitleBarProps {
   title: string;
   children?: React.ReactNode;
+  className?: string;
 }
 
-const TitleBar = ({ title, children }: TitleBarProps) => {
+const TitleBar = ({ title, children, className }: TitleBarProps) => {
   const router = useRouter();
   return (
     <View
-      className={`w-full ${children && "flex-row items-center justify-between"} `}
+      className={`w-full ${children && "flex-row items-center justify-between"} ${className} `}
     >
-      <Text className="absolute right-1/2 translate-x-1/2 font-bold text-xl">
+      <Text className="absolute right-1/2 translate-x-1/2 font-bold text-[21px] ">
         {title}
       </Text>
       <TouchableOpacity onPress={() => router.back()}>
