@@ -11,24 +11,23 @@ export default function RootLayout() {
   return (
     <SafeAreaView className="flex-1">
       <Toast position="bottom" bottomOffset={20} />
-      <Stack screenOptions={{ headerShown: false }}>
+      <Stack
+        screenOptions={{ headerShown: false, presentation: "transparentModal" }}
+      >
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="(onboarding)/onboarding" />
         <Stack.Screen name="(authScreens)/login" />
         <Stack.Screen name="(authScreens)/register" />
+        <Stack.Screen name="(AppScreens)/property/[id]" />
+        <Stack.Screen name="(AppScreens)/chat/index" />
+        <Stack.Screen name="(AppScreens)/chat/[chatId]" />
+        <Stack.Screen name="(AppScreens)/notifications" />
         <Stack.Screen
           name="(authScreens)/forgot-password"
           options={{
-            presentation: "modal",
+            presentation: "formSheet",
           }}
         />
-        <Stack.Screen
-          name="(AppScreens)/property/[id]"
-          options={{
-            presentation: "modal",
-          }}
-        />
-        <Stack.Screen name="(AppScreens)/chat/index" />
       </Stack>
     </SafeAreaView>
   );
