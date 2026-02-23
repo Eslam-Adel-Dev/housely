@@ -1,5 +1,5 @@
 // react native imports
-import { KeyboardAvoidingView, Platform } from "react-native";
+import { View } from "react-native";
 
 // types imports
 import { screenWrapperProps } from "@/types/type";
@@ -10,13 +10,9 @@ const ScreenWrapper = ({
   customStyle,
 }: screenWrapperProps) => {
   return (
-    <KeyboardAvoidingView
-      className={`${className} p-5 bg-white flex-1`}
-      style={customStyle}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
+    <View className={`${className} flex-1 p-5 bg-white`} style={customStyle}>
       {children}
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 
