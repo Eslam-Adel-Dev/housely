@@ -3,13 +3,13 @@ import { useState } from "react";
 //expo icons imports
 import Feather from "@expo/vector-icons/Feather";
 // components imports
+import CustomButton from "@/components/CustomButton";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 // expo imports
 import { useRouter } from "expo-router";
 // react native imports
-import CustomButton from "@/components/CustomButton";
 import { Text, TouchableOpacity, View } from "react-native";
 //images imports
 
@@ -83,6 +83,7 @@ const Login = () => {
 
       <CustomButton
         onButtonPress={() => router.push("/success-screen")}
+        textClassName="text-white"
         className="rounded-lg"
       >
         Change Password

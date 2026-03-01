@@ -3,12 +3,12 @@ import { useState } from "react";
 //expo icons imports
 import Feather from "@expo/vector-icons/Feather";
 // components imports
+import CustomButton from "@/components/CustomButton";
 import ScreenWrapper from "@/components/ScreenWrapper";
 // expo imports
 import { useRouter } from "expo-router";
 // react native imports
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import CustomButton from "@/components/CustomButton";
 // react otp import
 import { OtpInput } from "react-native-otp-entry";
 
@@ -53,6 +53,7 @@ const VerifyAccount = () => {
 
       <CustomButton
         onButtonPress={() => router.push("/change-password")}
+        textClassName="text-white"
         className="rounded-lg"
       >
         Verify

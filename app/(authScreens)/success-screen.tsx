@@ -30,7 +30,8 @@ const SuccessScreen = () => {
         </View>
       </View>
       <CustomButton
-        onButtonPress={() => router.push("/")}
+        onButtonPress={() => router.push("/login")}
+        textClassName="text-white"
         className="rounded-lg "
       >
         Continue

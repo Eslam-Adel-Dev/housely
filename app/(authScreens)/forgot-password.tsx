@@ -3,12 +3,12 @@ import { useState } from "react";
 //expo icons imports
 import Feather from "@expo/vector-icons/Feather";
 // components imports
+import CustomButton from "@/components/CustomButton";
 import ScreenWrapper from "@/components/ScreenWrapper";
 // expo imports
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 // react native imports
 import { Image, Text, TouchableOpacity, View } from "react-native";
-import CustomButton from "@/components/CustomButton";
 // ui component imports
 import { Card, CardContent } from "@/components/ui/card";
 // icons imports
@@ -69,6 +69,7 @@ const ForgotPassword = () => {
 
       <CustomButton
         onButtonPress={() => router.push("/verify-account")}
+        textClassName="text-white"
         className="rounded-lg"
       >
         Continue
