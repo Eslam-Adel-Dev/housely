@@ -3,14 +3,17 @@ import React, { useState } from "react";
 import { Image, TouchableOpacity } from "react-native";
 // hooks imports
 import useMediaDimensions from "@/hooks/useMediaDimensions";
+// context for image preview
+import { useImageContext } from "@/context/imageContext";
 // types imports
 import { size } from "@/types/type";
 //=========================================================
 
 const ImageBubble = React.memo(
-  ({ imageProps }: any) => {
+  (props: any) => {
     const [size, setSize] = useState<null | size>(null);
-    const { image } = imageProps.currentMessage;
+    const { image } = props.currentMessage;
+    const { showImage } = useImageContext();
 
     // get image dimensions (hook)
     useMediaDimensions({ media: image, setState: setSize });
@@ -18,14 +21,12 @@ const ImageBubble = React.memo(
     // rerender test
     console.warn("Image Bubble Rendered");
 
-    const imageURL = imageProps.currentMessage.image;
+    const imageURL = props.currentMessage.image;
 
     if (!imageURL || !size) return null;
+
     return (
-      <TouchableOpacity
-        onPress={imageProps.setImageSheetVisible}
-        className="mb-2"
-      >
+      <TouchableOpacity onPress={() => showImage(imageURL)} className="mb-2">
         <Image
           source={{ uri: imageURL }}
           style={{
@@ -39,8 +40,7 @@ const ImageBubble = React.memo(
     );
   },
   (prevProps, nextProps) =>
-    prevProps.imageProps.currentMessage.image ===
-    nextProps.imageProps.currentMessage.image,
+    prevProps.currentMessage.image === nextProps.currentMessage.image,
 );
 
 ImageBubble.displayName = "ImageBubble";
