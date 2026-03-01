@@ -1,25 +1,25 @@
 // react imports
+import { useRef, useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import Swiper from "react-native-swiper";
-import { useRef, useState } from "react";
 
 // expo imports
 import { useRouter } from "expo-router";
 
 // data imports
 import { onboardingData } from "@/data/data";
-import { storeData } from "@/lib/asyncStorageFuncs";
+import { storage } from "@/lib/mmkvStorage";
 
 // components imports
-import ScreenWrapper from "@/components/ScreenWrapper";
 import CustomButton from "@/components/CustomButton";
+import ScreenWrapper from "@/components/ScreenWrapper";
 
 //=========================================================
 
 const Onboarding = () => {
   const [activeIndex, setActiveIndex] = useState<number>(0);
-  const router = useRouter();
   const swiperRef = useRef<Swiper>(null);
+  const router = useRouter();
 
   const onSwiperChange = (index: number) => {
     setActiveIndex(index);
@@ -31,14 +31,22 @@ const Onboarding = () => {
       swiperRef.current?.scrollBy(1, true);
       return;
     }
-    await storeData("onboarding", "true");
+    storage.set("isOnboardingCompleted", true);
+    router.push("/login");
+  };
+
+  const handleSkipPress = async () => {
+    storage.set("isOnboardingCompleted", true);
     router.push("/login");
   };
 
   return (
     <ScreenWrapper>
       <View className="flex-row w-full items-center justify-end">
-        <TouchableOpacity className="border-2 border-gray-600/30 rounded-3xl h-12 w-20 flex items-center justify-center">
+        <TouchableOpacity
+          className="border-2 border-gray-600/30 rounded-3xl h-12 w-20 flex items-center justify-center"
+          onPress={handleSkipPress}
+        >
           <Text>Skip</Text>
         </TouchableOpacity>
       </View>
@@ -66,7 +74,11 @@ const Onboarding = () => {
       </View>
       {/* ======================================= */}
 
-      <CustomButton onButtonPress={onButtonPress} className="rounded-lg">
+      <CustomButton
+        onButtonPress={onButtonPress}
+        textClassName="text-white"
+        className="rounded-lg"
+      >
         {activeIndex === onboardingData.length - 1 ? "Get Started" : "Next"}
       </CustomButton>
     </ScreenWrapper>
