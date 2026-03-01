@@ -1,20 +1,20 @@
 // react  imports
 import { useState } from "react";
-//expo icons imports
-import Feather from "@expo/vector-icons/Feather";
 // components imports
+import CheckboxWithLabel from "@/components/CheckboxWithLabel";
+import CustomButton from "@/components/CustomButton";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 // expo imports
 import { Link, useRouter } from "expo-router";
 // react native imports
-import CheckboxWithLabel from "@/components/CheckboxWithLabel";
-import CustomButton from "@/components/CustomButton";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 //images imports
 import facebook_logo from "@/assets/images/facebook-logo.png";
 import google_logo from "@/assets/images/google-logo.png";
+// context imports
+import { useUserContext } from "@/context/userContext";
 
 //=========================================================
 
@@ -25,15 +25,18 @@ const styles = {
 //=========================================================
 
 const Login = () => {
-  const [focusedEmail, setFocusedEmail] = useState(false);
   const [focusedPassword, setFocusedPassword] = useState(false);
+  const [focusedEmail, setFocusedEmail] = useState(false);
+  const { login } = useUserContext();
   const router = useRouter();
 
+  const handleLogin = () => {
+    login();
+    router.replace("/");
+  };
+
   return (
-    <ScreenWrapper className="p-4 bg-[#fcfcfd]">
-      <TouchableOpacity onPress={() => router.back()}>
-        <Feather name="arrow-left" size={24} color="gray" />
-      </TouchableOpacity>
+    <ScreenWrapper className="p-4 pt-10 bg-[#fcfcfd]">
       {/* ---------------------------------- */}
       <View className="flex gap-2 mb-10 mt-5">
         <Text className="text-[1.7rem] font-bold">Welcome Back !</Text>
@@ -90,11 +93,13 @@ const Login = () => {
       {/* ---------------------------------- */}
 
       <CustomButton
-        onButtonPress={() => router.push("/")}
+        onButtonPress={handleLogin}
+        textClassName="text-white"
         className="rounded-lg"
       >
         Sign In
       </CustomButton>
+
       {/* ---------------------------------- */}
       <View className="flex-row items-center justify-between gap-2 mt-5 mb-7">
         <View className="h-[1px] bg-zinc-200 flex-1" />
