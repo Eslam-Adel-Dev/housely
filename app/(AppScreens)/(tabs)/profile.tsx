@@ -7,6 +7,7 @@ import ArrowRight from "@/assets/icons/profileScreen/ArrowRight.svg";
 import { useRouter } from "expo-router";
 // components imports
 import ScreenWrapper from "@/components/ScreenWrapper";
+import TitleBar from "@/components/layout/TitleBar";
 // data imports
 import { ProfileScreenOptions } from "@/data/data";
 // flashlist imports
@@ -14,12 +15,21 @@ import { FlashList } from "@shopify/flash-list";
 // images imports
 import profilePic from "@/assets/images/profilePic.jpg";
 // types imports
-import TitleBar from "@/components/layout/TitleBar";
 import { ProfileProps } from "@/types/type";
+// context imports
+import { useUserContext } from "@/context/userContext";
 
 //=========================================================
 
 const Profile = ({ optionName, Icon }: ProfileProps) => {
+  const { logout } = useUserContext();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logout();
+    router.push("/(authScreens)/login");
+  };
+
   return (
     <ScreenWrapper>
       <ScrollView className="h-full">
@@ -55,7 +65,7 @@ const Profile = ({ optionName, Icon }: ProfileProps) => {
           contentContainerStyle={{ paddingVertical: 25 }}
         />
         {/* --------------------------------------- */}
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleLogout}>
           <Text className="text-red-500 text-center text-xl">Sign Out</Text>
         </TouchableOpacity>
       </ScrollView>
