@@ -31,7 +31,6 @@ const Chat = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [user, setUser] = useState<User | undefined>();
   const [sheetVisible, setSheetVisible] = useState(false);
-  const [imageSheetVisible, setImageSheetVisible] = useState(false);
   const { handleMediaPicker, media, setMedia } = useMediaPicker();
   const { chatId } = useLocalSearchParams();
   const headerHeight = useHeaderHeight();
@@ -137,14 +136,7 @@ const Chat = () => {
         renderActions={renderActions}
         renderSend={renderSend}
         onPressActionButton={() => setSheetVisible(true)}
-        renderMessageImage={(props) => (
-          <ImageBubble
-            imageProps={{
-              ...props,
-              setImageSheetVisible: () => setImageSheetVisible(true),
-            }}
-          />
-        )}
+        renderMessageImage={(props) => <ImageBubble {...props} />}
         renderMessageVideo={(props) => <VideoBubble {...props} />}
       />
       {/* action sheet */}
@@ -154,11 +146,8 @@ const Chat = () => {
         onPickImage={() => handleMediaPicker("images")}
         onPickVideo={() => handleMediaPicker("videos")}
       />
-      {/* image preview */}
-      <ImagePreview
-        visible={imageSheetVisible}
-        onClose={() => setImageSheetVisible(false)}
-      />
+
+      <ImagePreview />
     </View>
   );
 };
