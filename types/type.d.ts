@@ -161,3 +161,10 @@ export type Properties = Property[];
 export interface contextProviderProps {
   children: React.ReactNode;
 }
+// context type for global image preview
+export interface ImageContextType {
+  visible: boolean;
+  uri?: string;
+  showImage: (uri: string) => void;
+  hideImage: () => void;
+}
