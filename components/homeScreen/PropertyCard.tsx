@@ -7,20 +7,21 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 import Liked from "@/assets/icons/Heart.svg";
 import Location from "@/assets/icons/Location.svg";
 import NotLiked from "@/assets/icons/tabBarIcons/inactive/Heart.svg";
-// react imports
-import { useState } from "react";
 // types imports
 import { Property } from "@/types/type";
+// hooks
+import useFavoriteProperties from "@/hooks/useFavoriteProperties";
 
-const PropertyCard = ({
-  id,
-  name,
-  location,
-  rentPerMonth,
-  image,
-}: Property) => {
+const PropertyCard = (props: Property) => {
+  const { id, name, location, rentPerMonth, image } = props;
+  const { isLiked: isPropertyLiked, toggleLike } = useFavoriteProperties(props);
   const router = useRouter();
-  const [isPropertyLiked, setIsPropertyLiked] = useState(false);
+
+  //=========================================================
+
+  const handleLike = toggleLike;
+
+  //=========================================================
 
   return (
     <TouchableOpacity
@@ -55,7 +56,7 @@ const PropertyCard = ({
 
       <TouchableOpacity
         className="absolute bottom-5 right-5 z-10 size-10 rounded-full items-center justify-center bg-white"
-        onPress={() => setIsPropertyLiked((prev) => !prev)}
+        onPress={handleLike}
       >
         {isPropertyLiked ? (
           <Liked className="w-[60%] h-[60%]" />

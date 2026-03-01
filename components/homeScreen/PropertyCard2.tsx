@@ -3,7 +3,6 @@ import Liked from "@/assets/icons/Heart.svg";
 import Location from "@/assets/icons/Location.svg";
 import NotLiked from "@/assets/icons/tabBarIcons/inactive/Heart.svg";
 // react imports
-import { useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 // components imports
 import RateStars from "../RateStars";
@@ -11,6 +10,10 @@ import RateStars from "../RateStars";
 import useScreenDimensions from "@/hooks/useScreenDimensions";
 import { avgPropertyRatingFunction } from "@/lib/utils";
 import { Property } from "@/types/type";
+// hooks
+import useFavoriteProperties from "@/hooks/useFavoriteProperties";
+// expo router
+import { useRouter } from "expo-router";
 
 //=============================================
 
@@ -20,24 +23,20 @@ type fullWidthType = {
 
 //=============================================
 
-const PropertyCard2 = ({
-  name,
-  location,
-  rentPerMonth,
-  reviews,
-  image,
-  fullWidth,
-}: Property & fullWidthType) => {
+const PropertyCard2 = (props: Property & fullWidthType) => {
   //--------------------------------
-  const [isPropertyLiked, setIsPropertyLiked] = useState(false);
+  const { id, name, location, rentPerMonth, image, reviews, fullWidth } = props;
+  const { isLiked: isPropertyLiked, toggleLike } = useFavoriteProperties(props);
   const { screenWidth } = useScreenDimensions();
   const avgRating = avgPropertyRatingFunction(reviews);
+  const router = useRouter();
   //--------------------------------
 
   return (
-    <View
+    <TouchableOpacity
       className="flex-row h-[90px] gap-4 border-b border-zinc-200 px-2 pb-4"
       style={{ width: fullWidth ? screenWidth - 40 : screenWidth - 70 }}
+      onPress={() => router.push(`/property/${id}`)}
     >
       {typeof image === "string" ? (
         <Image
@@ -59,7 +58,7 @@ const PropertyCard2 = ({
           <Text className="font-bold text-lg pr-5 w-[85%]" numberOfLines={1}>
             {name}
           </Text>
-          <TouchableOpacity onPress={() => setIsPropertyLiked((prev) => !prev)}>
+          <TouchableOpacity onPress={toggleLike}>
             {isPropertyLiked ? <Liked className="w-20 h-20" /> : <NotLiked />}
           </TouchableOpacity>
         </View>
@@ -80,7 +79,7 @@ const PropertyCard2 = ({
           <RateStars rate={avgRating} />
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
