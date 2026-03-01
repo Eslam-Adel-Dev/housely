@@ -1,31 +1,26 @@
 // react native imports
 import { useState } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
-
 // icons imports
 import chat from "@/assets/icons/Chat.png";
 import location from "@/assets/icons/Location.png";
 import notification from "@/assets/icons/Notification.png";
-
 // components imports
 import ScreenWrapper from "@/components/ScreenWrapper";
 import SearchComp from "@/components/SearchComp";
 import AdSection from "@/components/homeScreen/AdSection";
 import Filter from "@/components/homeScreen/Filter";
 import PropertyCard2 from "@/components/homeScreen/PropertyCard2";
-
 // images imports
 import building from "@/assets/images/building.png";
 import PropertyCard from "@/components/homeScreen/PropertyCard";
-
 // dummy data imports
 import { filtersData, properties } from "@/data/data";
-
 // expo imports
 import { useRouter } from "expo-router";
-
 // flashlist imports
 import { FlashList } from "@shopify/flash-list";
+
 //===================================================================
 
 const Index = () => {
