@@ -19,7 +19,7 @@ import google_logo from "@/assets/images/google-logo.png";
 //=========================================================
 
 const styles = {
-  textInput: "h-16 rounded-2xl bg-white text-lg px-5",
+  textInput: "h-16 rounded-2xl bg-white text-lg px-5 text-zinc-600",
 };
 
 //=========================================================
@@ -56,7 +56,7 @@ const Register = () => {
             placeholder="Email"
             onFocus={() => setFocusedEmail(true)}
             onBlur={() => setFocusedEmail(false)}
-            className={`${focusedEmail ? "border-primary-600 border-[1.5px]" : "border-zinc-300"} ${styles.textInput} placeholder:text-zinc-400 text-zinc-600`}
+            className={`${focusedEmail ? "border-primary-600 border-[1.5px]" : "border-zinc-300"} ${styles.textInput} placeholder:text-zinc-400`}
           />
         </View>
         <View className="flex gap-2 mb-5">
@@ -75,7 +75,7 @@ const Register = () => {
             placeholder="Username"
             onFocus={() => setFocusedUsername(true)}
             onBlur={() => setFocusedUsername(false)}
-            className={`${focusedUsername ? "border-primary-600 border-[1.5px]" : "border-zinc-300"} ${styles.textInput} placeholder:text-zinc-400 text-zinc-600`}
+            className={`${focusedUsername ? "border-primary-600 border-[1.5px]" : "border-zinc-300"} ${styles.textInput} placeholder:text-zinc-400`}
           />
         </View>
         <View className="flex gap-2 mb-5">
@@ -94,7 +94,7 @@ const Register = () => {
             placeholder="Password"
             onFocus={() => setFocusedPassword(true)}
             onBlur={() => setFocusedPassword(false)}
-            className={`${focusedPassword ? "border-primary-600 border-[1.5px]" : "border-zinc-300"} ${styles.textInput} placeholder:text-zinc-400 text-zinc-600`}
+            className={`${focusedPassword ? "border-primary-600 border-[1.5px]" : "border-zinc-300"} ${styles.textInput} placeholder:text-zinc-400`}
           />
         </View>
 
@@ -105,10 +105,7 @@ const Register = () => {
       </View>
       {/* ---------------------------------- */}
 
-      <CustomButton
-        onButtonPress={() => router.push("/")}
-        className="rounded-lg"
-      >
+      <CustomButton textClassName="text-white" className="rounded-lg">
         Sign Up
       </CustomButton>
       {/* ---------------------------------- */}
@@ -132,7 +129,7 @@ const Register = () => {
       <View>
         <Text className="text-zinc-400 text-center">
           Already have an account ?{" "}
-          <Link href="/signup" className="text-primary-600">
+          <Link href="/login" className="text-primary-600">
             Sign In
           </Link>
         </Text>
