@@ -5,6 +5,7 @@ export type size = {
   height: number;
 };
 
+//==============================================
 // interfaces
 
 export interface screenWrapperProps {
@@ -131,7 +132,7 @@ export interface ImagePreviewProps {
 export interface Property {
   id: string;
   name: string;
-  image: string;
+  image?: string;
   images: string[];
   rentPerMonth: number;
   currency: string;
@@ -153,3 +154,10 @@ export interface Property {
 }
 
 export type Properties = Property[];
+
+//==============================================
+// context types
+
+export interface contextProviderProps {
+  children: React.ReactNode;
+}
