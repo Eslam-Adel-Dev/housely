@@ -21,16 +21,27 @@ import Bath from "@/assets/icons/bath.svg";
 import Bed from "@/assets/icons/bed.svg";
 import Call_Icon from "@/assets/icons/Call_Icon.svg";
 import Chat_Icon from "@/assets/icons/Chat_Icon.svg";
+import Liked from "@/assets/icons/Heart.svg";
 import Location from "@/assets/icons/Location.svg";
 import MapPin from "@/assets/icons/map-pin-icon.svg";
 import ShareIcon from "@/assets/icons/share-2.svg";
-import HeartIcon from "@/assets/icons/tabBarIcons/inactive/Heart.svg";
+import NotLiked from "@/assets/icons/tabBarIcons/inactive/Heart.svg";
+// hooks imports
+import useFavoriteProperties from "@/hooks/useFavoriteProperties";
 
 //===========================================================
 
 const PropertyComp = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const state = properties.filter((property) => property.id === id)[0];
+  const { isLiked, toggleLike } = useFavoriteProperties(state);
+
+  if (!state)
+    return (
+      <ScreenWrapper>
+        <Text>Property not found</Text>
+      </ScreenWrapper>
+    );
 
   return (
     <ScreenWrapper className="relative">
@@ -41,8 +52,12 @@ const PropertyComp = () => {
               <TouchableOpacity>
                 <ShareIcon size={30} />
               </TouchableOpacity>
-              <TouchableOpacity>
-                <HeartIcon size={30} />
+              <TouchableOpacity onPress={toggleLike}>
+                {isLiked ? (
+                  <Liked className="w-[60%] h-[60%]" />
+                ) : (
+                  <NotLiked className="w-[60%] h-[60%]" />
+                )}
               </TouchableOpacity>
             </View>
           </TitleBar>
