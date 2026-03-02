@@ -27,6 +27,7 @@ import MapPin from "@/assets/icons/map-pin-icon.svg";
 import ShareIcon from "@/assets/icons/share-2.svg";
 import NotLiked from "@/assets/icons/tabBarIcons/inactive/Heart.svg";
 // hooks imports
+import { usePhoneLinking, useSharePropertyLink } from "@/hooks/useDeepLinking";
 import useFavoriteProperties from "@/hooks/useFavoriteProperties";
 
 //===========================================================
@@ -35,6 +36,8 @@ const PropertyComp = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const state = properties.filter((property) => property.id === id)[0];
   const { isLiked, toggleLike } = useFavoriteProperties(state);
+  const { handleLinking } = usePhoneLinking(state.agent.phone);
+  const { handleShare } = useSharePropertyLink(id);
 
   if (!state)
     return (
@@ -49,7 +52,7 @@ const PropertyComp = () => {
         <View className="gap-7 mb-5">
           <TitleBar title="Details">
             <View className="flex-row items-center justify-center gap-5">
-              <TouchableOpacity>
+              <TouchableOpacity onPress={handleShare}>
                 <ShareIcon size={30} />
               </TouchableOpacity>
               <TouchableOpacity onPress={toggleLike}>
@@ -173,7 +176,10 @@ const PropertyComp = () => {
                 </View>
               </View>
               <View className="flex-row items-center gap-3">
-                <TouchableOpacity className="bg-primary-100/40 p-2 rounded-full">
+                <TouchableOpacity
+                  className="bg-primary-100/40 p-2 rounded-full"
+                  onPress={handleLinking}
+                >
                   <Call_Icon size={30} />
                 </TouchableOpacity>
                 <TouchableOpacity className="bg-primary-100/40 p-2 rounded-full">
