@@ -14,7 +14,7 @@ const AuthLayout = () => {
       screenOptions={{ headerShown: false, presentation: "transparentModal" }}
       initialRouteName="login"
     >
-      <Stack.Screen name="change-password" />
+      <Stack.Screen name="reset-password" />
       <Stack.Screen name="forgot-password" />
       <Stack.Screen name="login" />
       <Stack.Screen name="register" />
