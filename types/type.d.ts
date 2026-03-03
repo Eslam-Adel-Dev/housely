@@ -168,3 +168,28 @@ export interface ImageContextType {
   showImage: (uri: string) => void;
   hideImage: () => void;
 }
+
+//==============================================
+// forms types
+
+export type loginInput = {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+};
+
+export type registerInput = {
+  email: string;
+  username: string;
+  password: string;
+  agreeToTerms: boolean;
+};
+
+export type verifyAccountInput = {
+  otp: string;
+};
+
+export type resetPasswordInput = {
+  newPassword: string;
+  confirmPassword: string;
+};
