@@ -11,7 +11,14 @@ import { Label } from "@/components/ui/label";
 import { useRouter } from "expo-router";
 // react native imports
 import { Text, TouchableOpacity, View } from "react-native";
-//images imports
+// react hook form
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Controller, useForm } from "react-hook-form";
+// yup schemas
+import {
+  ResetPasswordFormData,
+  resetPasswordSchema,
+} from "@/lib/yupSchemas/resetPasswordSchema";
 
 //=========================================================
 
@@ -21,10 +28,35 @@ const styles = {
 
 //=========================================================
 
-const Login = () => {
-  const [newPassword, setNewPassword] = useState(false);
-  const [confirmPassword, setConfirmPassword] = useState(false);
+const ResetPassword = () => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ResetPasswordFormData>({
+    resolver: yupResolver(resetPasswordSchema),
+    defaultValues: {
+      newPassword: "",
+      confirmPassword: "",
+    },
+  });
+
+  const [focusedNewPassword, setFocusedNewPassword] = useState(false);
+  const [focusedConfirmPassword, setFocusedConfirmPassword] = useState(false);
   const router = useRouter();
+
+  // -----------------------
+
+  const handleResetPassword = async (data: ResetPasswordFormData) => {
+    try {
+      console.log(data);
+      router.push("/success-screen");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // -----------------------
 
   return (
     <ScreenWrapper className="p-4 bg-[#fcfcfd]">
@@ -40,49 +72,98 @@ const Login = () => {
       </View>
       {/* ---------------------------------- */}
       <View className="mb-10 h-[65%]">
+        {/* New Password Field */}
         <View className="flex gap-2 mb-5">
           <Label
-            nativeID="password"
-            htmlFor="password"
+            nativeID="newPassword"
+            htmlFor="newPassword"
             className="text-lg font-bold"
           >
             New Password
           </Label>
-          <Input
-            id="password"
-            keyboardType="default"
-            textContentType="password"
-            autoComplete="password"
-            placeholder="Password"
-            onFocus={() => setNewPassword(true)}
-            onBlur={() => setNewPassword(false)}
-            className={`${newPassword ? "border-primary-600 border-[1.5px]" : "border-zinc-300 "} ${styles.textInput} placeholder:text-zinc-400 text-zinc-600`}
+          <Controller
+            name="newPassword"
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                id="newPassword"
+                keyboardType="default"
+                textContentType="password"
+                autoComplete="password"
+                secureTextEntry
+                placeholder="New Password"
+                value={value}
+                onChangeText={onChange}
+                onFocus={() => setFocusedNewPassword(true)}
+                onBlur={() => {
+                  setFocusedNewPassword(false);
+                  onBlur();
+                }}
+                className={`${
+                  focusedNewPassword
+                    ? "border-primary-600 border-[1.5px]"
+                    : errors.newPassword
+                      ? "border-red-500 border-[1.5px]"
+                      : "border-zinc-300"
+                } ${styles.textInput} placeholder:text-zinc-400 text-zinc-600`}
+              />
+            )}
           />
+          {errors.newPassword && (
+            <Text className="text-red-500 text-sm ml-1">
+              {errors.newPassword.message}
+            </Text>
+          )}
         </View>
+
+        {/* Confirm Password Field */}
         <View className="flex gap-2 mb-5">
           <Label
-            nativeID="password"
-            htmlFor="password"
+            nativeID="confirmPassword"
+            htmlFor="confirmPassword"
             className="text-lg font-bold"
           >
             Confirm Password
           </Label>
-          <Input
-            id="password"
-            keyboardType="default"
-            textContentType="password"
-            autoComplete="password"
-            placeholder="Password"
-            onFocus={() => setConfirmPassword(true)}
-            onBlur={() => setConfirmPassword(false)}
-            className={`${confirmPassword ? "border-primary-600 border-[1.5px]" : "border-zinc-300"} ${styles.textInput} placeholder:text-zinc-400 text-zinc-600`}
+          <Controller
+            name="confirmPassword"
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                id="confirmPassword"
+                keyboardType="default"
+                textContentType="password"
+                autoComplete="password"
+                secureTextEntry
+                placeholder="Confirm Password"
+                value={value}
+                onChangeText={onChange}
+                onFocus={() => setFocusedConfirmPassword(true)}
+                onBlur={() => {
+                  setFocusedConfirmPassword(false);
+                  onBlur();
+                }}
+                className={`${
+                  focusedConfirmPassword
+                    ? "border-primary-600 border-[1.5px]"
+                    : errors.confirmPassword
+                      ? "border-red-500 border-[1.5px]"
+                      : "border-zinc-300"
+                } ${styles.textInput} placeholder:text-zinc-400 text-zinc-600`}
+              />
+            )}
           />
+          {errors.confirmPassword && (
+            <Text className="text-red-500 text-sm ml-1">
+              {errors.confirmPassword.message}
+            </Text>
+          )}
         </View>
       </View>
       {/* ---------------------------------- */}
 
       <CustomButton
-        onButtonPress={() => router.push("/success-screen")}
+        onButtonPress={handleSubmit(handleResetPassword) as () => void}
         textClassName="text-white"
         className="rounded-lg"
       >
@@ -92,4 +173,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ResetPassword;
