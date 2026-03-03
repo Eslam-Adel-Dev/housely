@@ -1,17 +1,34 @@
+// react imports
+import { useState } from "react";
+import { Platform, View } from "react-native";
+// components imports
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import * as Haptics from "expo-haptics";
-import * as React from "react";
-import { Platform, View } from "react-native";
+// types imports
 import { CheckboxWithLabelProps } from "@/types/type";
+// haptics imports
+import * as Haptics from "expo-haptics";
 
-function CheckboxWithLabel({ label, classNameLabel }: CheckboxWithLabelProps) {
-  const [checked, setChecked] = React.useState(false);
+function CheckboxWithLabel({
+  label,
+  classNameLabel,
+  checked: controlledChecked,
+  onCheckedChange: controlledOnCheckedChange,
+}: CheckboxWithLabelProps) {
+  const [internalChecked, setInternalChecked] = useState(false);
+  const isControlled = controlledChecked !== undefined;
+  const checked = isControlled ? controlledChecked : internalChecked;
 
-  function onCheckedChange(checked: boolean) {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setChecked(checked);
+  //==================================================
+  function handleCheckedChange(value: boolean) {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    if (isControlled) {
+      controlledOnCheckedChange?.(value);
+    } else {
+      setInternalChecked(value);
+    }
   }
+  //==================================================
 
   return (
     <View className="flex-row items-center gap-2">
@@ -19,7 +36,7 @@ function CheckboxWithLabel({ label, classNameLabel }: CheckboxWithLabelProps) {
         aria-labelledby="terms-checkbox"
         id="terms-checkbox"
         checked={checked}
-        onCheckedChange={onCheckedChange}
+        onCheckedChange={handleCheckedChange}
         className={`${checked && "bg-primary-600"} border-zinc-300 size-5`}
         iconClassName="text-white"
       />
@@ -28,10 +45,7 @@ function CheckboxWithLabel({ label, classNameLabel }: CheckboxWithLabelProps) {
         htmlFor="terms-checkbox"
         className={classNameLabel}
         onPress={Platform.select({
-          native: () => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            setChecked((prev) => !prev);
-          },
+          native: () => handleCheckedChange(!checked),
         })}
       >
         {label}
