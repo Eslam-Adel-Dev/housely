@@ -9,19 +9,27 @@ import Toast from "react-native-toast-message";
 // context imports
 import ImageContext from "@/context/imageContext";
 import UserContext from "@/context/userContext";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function RootLayout() {
   return (
     <UserContext>
       <ImageContext>
-        <SafeAreaView className="flex-1">
-          <Toast position="bottom" bottomOffset={20} />
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="(AppScreens)" />
-            <Stack.Screen name="(authScreens)" />
-            <Stack.Screen name="onboarding" />
-          </Stack>
-        </SafeAreaView>
+        <GestureHandlerRootView className="flex-1 bg-transparent">
+          <SafeAreaView className="flex-1">
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                presentation: "transparentModal",
+              }}
+            >
+              <Stack.Screen name="(AppScreens)" />
+              <Stack.Screen name="(authScreens)" />
+              <Stack.Screen name="onboarding" />
+            </Stack>
+          </SafeAreaView>
+        </GestureHandlerRootView>
+        <Toast position="bottom" bottomOffset={20} />
       </ImageContext>
     </UserContext>
   );

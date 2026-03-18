@@ -22,6 +22,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 // yup schemas
 import { loginSchema } from "@/lib/yupSchemas/loginSchema";
+// toast imports
+import Toast from "react-native-toast-message";
 
 //=========================================================
 
@@ -56,6 +58,11 @@ const Login = () => {
     try {
       console.log(data);
       login();
+      Toast.show({
+        type: "success",
+        text1: "Welcome back! 👋",
+        text2: "You have successfully signed in.",
+      });
       router.replace("/");
     } catch (error) {
       console.error(error);
