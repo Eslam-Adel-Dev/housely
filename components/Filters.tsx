@@ -41,3 +41,35 @@ const Filter = ({
 };
 
 export default Filter;
+
+//=======================================================
+
+export const SearchFilter = ({
+  id,
+  image: ImageSVG,
+  filterName,
+  selectedFilter,
+  setSelectedFilter,
+}: FilterProps) => {
+  return (
+    <TouchableOpacity
+      onPress={() => setSelectedFilter(id)}
+      className="w-full h-20 items-center gap-3 border border-zinc-300 rounded-xl p-2 px-3"
+      style={{
+        backgroundColor: selectedFilter === id ? "#F4EBFF" : "transparent",
+        borderColor: selectedFilter === id ? "#7F56D9" : "#E4E4E7",
+      }}
+    >
+      <ImageSVG size={200} />
+      <Text
+        style={{
+          color: selectedFilter === id ? "black" : "grey",
+          fontSize: 12,
+          fontWeight: "bold",
+        }}
+      >
+        {filterName}
+      </Text>
+    </TouchableOpacity>
+  );
+};
