@@ -14,6 +14,9 @@ function CheckboxWithLabel({
   classNameLabel,
   checked: controlledChecked,
   onCheckedChange: controlledOnCheckedChange,
+  classNameContainer,
+  classNameCheckBox,
+  styleLabel,
 }: CheckboxWithLabelProps) {
   const [internalChecked, setInternalChecked] = useState(false);
   const isControlled = controlledChecked !== undefined;
@@ -31,19 +34,20 @@ function CheckboxWithLabel({
   //==================================================
 
   return (
-    <View className="flex-row items-center gap-2">
+    <View className={`${classNameContainer} flex-row items-center gap-2`}>
       <Checkbox
         aria-labelledby="terms-checkbox"
         id="terms-checkbox"
         checked={checked}
         onCheckedChange={handleCheckedChange}
-        className={`${checked && "bg-primary-600"} border-zinc-300 size-5`}
+        className={`${checked && "bg-primary-600"} border-zinc-300 size-5 ${classNameCheckBox}`}
         iconClassName="text-white"
       />
       <Label
         nativeID="terms-checkbox"
         htmlFor="terms-checkbox"
         className={classNameLabel}
+        style={styleLabel}
         onPress={Platform.select({
           native: () => handleCheckedChange(!checked),
         })}
