@@ -8,11 +8,15 @@ import onboardingImage from "@/assets/images/onboardingImg1.png";
 import onboardingImage2 from "@/assets/images/onboardingImg2.png";
 import onboardingImage3 from "@/assets/images/onboardingImg3.png";
 // icons imports
+import AC from "@/assets/icons/Ac.svg";
 import Info from "@/assets/icons/profileScreen/Info.svg";
 import Notification from "@/assets/icons/profileScreen/Notification.svg";
 import Setting from "@/assets/icons/profileScreen/Setting.svg";
 import Time from "@/assets/icons/profileScreen/Time.svg";
 import Wallet from "@/assets/icons/profileScreen/Wallet.svg";
+import Bath from "@/assets/icons/searchScreen/bath.svg";
+import Bed from "@/assets/icons/searchScreen/bed.svg";
+import WIFI from "@/assets/icons/Wifi.svg";
 //=========================================================
 
 export const onboardingData = [
@@ -154,6 +158,29 @@ export const filtersData = [
   },
 ];
 
+export const SearchFiltersData = [
+  {
+    id: 1,
+    filterName: "Bet Room",
+    image: Bed,
+  },
+  {
+    id: 2,
+    filterName: "Bathub",
+    image: Bath,
+  },
+  {
+    id: 3,
+    filterName: "AC",
+    image: AC,
+  },
+  {
+    id: 4,
+    filterName: "WIFI",
+    image: WIFI,
+  },
+];
+
 //=========================================================
 
 export const ProfileScreenOptions = [
@@ -187,26 +214,26 @@ export const ProfileScreenOptions = [
 //=========================================================
 
 export const users = {
-  alice: {
+  ahmedNaguib: {
     _id: 2,
-    name: "Alice",
-    lastMessage: "Hey, how are you?",
+    name: "Ahmed Naguib",
+    lastMessage: "The apartment is available for viewing anytime!",
     messageTime: new Date("2026-02-07T05:28:00Z"),
-    image: "https://i.pravatar.cc/150?img=2",
+    image: "https://www.loremfaces.net/128/id/2.jpg",
   },
-  bob: {
+  saraElMansy: {
     _id: 3,
-    name: "Bob",
-    lastMessage: "See you tomorrow!",
+    name: "Sara El-Mansy",
+    lastMessage: "I'll send you the contract details shortly.",
     messageTime: new Date("2026-02-06T18:45:00Z"),
-    image: "https://i.pravatar.cc/150?img=3",
+    image: "https://www.loremfaces.net/128/id/3.jpg",
   },
-  eslam: {
+  omarHassan: {
     _id: 5,
-    name: "Eslam",
-    lastMessage: "Thanks for the help!",
+    name: "Omar Hassan",
+    lastMessage: "The studio is move-in ready!",
     messageTime: new Date("2026-02-07T04:15:00Z"),
-    image: "https://i.pravatar.cc/150?img=6",
+    image: "https://www.loremfaces.net/128/id/6.jpg",
   },
   me: {
     _id: 1,
@@ -215,139 +242,146 @@ export const users = {
     messageTime: new Date("2026-02-07T05:20:00Z"),
     image: "https://i.pravatar.cc/150?img=1",
   },
-  support: {
+  fatimaYoussef: {
     _id: 4,
-    name: "Support Bot",
-    lastMessage: "How can we assist you?",
+    name: "Fatima Youssef",
+    lastMessage: "Great family-friendly area, come check it out!",
     messageTime: new Date("2026-02-07T03:30:00Z"),
-    image: "https://i.pravatar.cc/150?img=5",
+    image: "https://www.loremfaces.net/128/id/5.jpg",
+  },
+  karimFathy: {
+    _id: 6,
+    name: "Karim Fathy",
+    lastMessage: "The townhouse has a beautiful private garden.",
+    messageTime: new Date("2026-02-07T02:00:00Z"),
+    image: "https://www.loremfaces.net/128/id/7.jpg",
   },
 };
 //=========================================================
 
 export const conversations = {
-  [users.alice._id]: [
+  [users.ahmedNaguib._id]: [
     {
       _id: "g-1",
-      text: "Hey! Did you push the latest changes?",
+      text: "Is the Zamalek apartment still available?",
       createdAt: new Date(Date.now() - 1000 * 60 * 2),
-      user: users.alice,
-    },
-    {
-      _id: "g-2",
-      text: "Yep, just did. Please review 🙏",
-      createdAt: new Date(Date.now() - 1000 * 60 * 5),
       user: users.me,
     },
     {
+      _id: "g-2",
+      text: "Yes, it is! Would you like to schedule a viewing?",
+      createdAt: new Date(Date.now() - 1000 * 60 * 5),
+      user: users.ahmedNaguib,
+    },
+    {
       _id: "g-3",
-      text: "Looks good so far. One small comment on the auth flow.",
+      text: "That would be great, when are you free?",
       createdAt: new Date(Date.now() - 1000 * 60 * 10),
-      user: users.alice,
+      user: users.me,
     },
     {
       _id: "g-4",
       text: "Got it, I’ll fix that now.",
       createdAt: new Date(Date.now() - 1000 * 60 * 15),
-      user: users.me,
+      user: users.ahmedNaguib,
     },
   ],
 
-  [users.bob._id]: [
+  [users.saraElMansy._id]: [
     {
       _id: "a-1",
-      text: "Daily sync: blockers?",
+      text: "Hi Sara, I'm interested in the New Cairo villa.",
       createdAt: new Date(Date.now() - 1000 * 60 * 30),
-      user: users.bob,
+      user: users.me,
     },
     {
       _id: "a-2",
-      text: "Only waiting on API creds.",
+      text: "Great choice! It has a pool and lovely garden.",
       createdAt: new Date(Date.now() - 1000 * 60 * 32),
-      user: users.me,
+      user: users.saraElMansy,
     },
     {
       _id: "a-3",
       text: "I’ll send them shortly.",
       createdAt: new Date(Date.now() - 1000 * 60 * 35),
-      user: users.bob,
+      user: users.me,
     },
     {
       _id: "a-4",
-      text: "Perfect 👍",
+      text: "Minimum 1 year. I'll send you the contract details shortly.",
       createdAt: new Date(Date.now() - 1000 * 60 * 37),
-      user: users.me,
+      user: users.saraElMansy,
     },
     {
       _id: "a-5",
       text: "Let’s aim to ship by Friday.",
       createdAt: new Date(Date.now() - 1000 * 60 * 40),
-      user: users.bob,
+      user: users.me,
     },
   ],
 
-  [users.support._id]: [
+  [users.fatimaYoussef._id]: [
     {
       _id: "s-1",
-      text: "Welcome to support! How can I help you today?",
+      text: "Hello! Is the Dokki apartment pet-friendly?",
       createdAt: new Date(Date.now() - 1000 * 60 * 60),
-      user: users.support,
+      user: users.me,
     },
     {
       _id: "s-2",
-      text: "My app crashes when I open the profile screen.",
+      text: "Yes it is! Great family-friendly area, come check it out!",
       createdAt: new Date(Date.now() - 1000 * 60 * 62),
-      user: users.me,
+      user: users.fatimaYoussef,
     },
     {
       _id: "s-3",
-      text: "Sorry about that! What device are you using?",
+      text: "Wonderful, I'll come by this weekend.",
       createdAt: new Date(Date.now() - 1000 * 60 * 63),
-      user: users.support,
+      user: users.me,
     },
     {
       _id: "s-4",
-      text: "iPhone 14, iOS 17.",
+      text: "Saturday at 11am works for me!",
       createdAt: new Date(Date.now() - 1000 * 60 * 65),
-      user: users.me,
+      user: users.fatimaYoussef,
     },
     {
       _id: "s-5",
       text: "Thanks! We’re investigating this issue now.",
       createdAt: new Date(Date.now() - 1000 * 60 * 67),
-      user: users.support,
+      user: users.me,
     },
   ],
-  [users.eslam._id]: [
+  [users.omarHassan._id]: [
     {
       _id: "s-1",
-      text: "Welcome to support! How can I help you today?",
+      text: "Hi Omar, is the Maadi studio furnished?",
       createdAt: new Date(Date.now() - 1000 * 60 * 60),
-      user: users.support,
+      user: users.me,
     },
     {
       _id: "s-2",
-      text: "My app crashes when I open the profile screen.",
+      text: "Yes, fully furnished! The studio is move-in ready!",
       createdAt: new Date(Date.now() - 1000 * 60 * 62),
-      user: users.me,
+      user: users.omarHassan,
     },
     {
       _id: "s-3",
-      text: "Sorry about that! What device are you using?",
+      text: "That's exactly what I need. What's included?",
       createdAt: new Date(Date.now() - 1000 * 60 * 63),
-      user: users.support,
+      user: users.me,
     },
     {
       _id: "s-4",
-      text: "iPhone 14, iOS 17.",
+      text: "Kitchen appliances, AC, and a full bed set.",
       createdAt: new Date(Date.now() - 1000 * 60 * 65),
-      user: users.me,
+      user: users.omarHassan,
     },
     {
       _id: "s-5",
       text: "Thanks! We’re investigating this issue now.",
       createdAt: new Date(Date.now() - 1000 * 60 * 67),
-      user: users.support,
+      user: users.me,
     },
   ],
 };
@@ -378,6 +412,7 @@ export const properties = [
     description:
       "A spacious and modern apartment in the prestigious Zamalek district with Nile views and an elegant interior.",
     agent: {
+      id: 2,
       name: "Ahmed Naguib",
       profession: "Senior Real Estate Agent",
       phone: "+20 100 234 5678",
@@ -424,6 +459,7 @@ export const properties = [
     description:
       "Luxurious modern villa with a large garden, pool and panoramic views of New Cairo’s skyline.",
     agent: {
+      id: 3,
       name: "Sara El-Mansy",
       profession: "Top Listing Specialist",
       phone: "+20 122 345 6789",
@@ -467,6 +503,7 @@ export const properties = [
     description:
       "A cozy, fully furnished studio in the leafy Maadi district — perfect for professionals or couples.",
     agent: {
+      id: 5,
       name: "Omar Hassan",
       profession: "Local Property Expert",
       phone: "+20 111 987 6543",
@@ -504,6 +541,7 @@ export const properties = [
     description:
       "Spacious 3-BR apartment near metro, cafes, and shopping areas — ideal for families.",
     agent: {
+      id: 4,
       name: "Fatima Youssef",
       profession: "Residential Specialist",
       phone: "+20 122 998 7766",
@@ -547,6 +585,7 @@ export const properties = [
     description:
       "Elegant and modern townhouse with a large living area and private garden — perfect for a moving-in ready home.",
     agent: {
+      id: 6,
       name: "Karim Fathy",
       profession: "Property Consultant",
       phone: "+20 100 543 2198",
