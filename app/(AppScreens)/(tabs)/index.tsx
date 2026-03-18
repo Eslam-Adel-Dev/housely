@@ -6,10 +6,10 @@ import chat from "@/assets/icons/Chat.png";
 import location from "@/assets/icons/Location.png";
 import notification from "@/assets/icons/Notification.png";
 // components imports
+import Filter from "@/components/Filters";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import SearchComp from "@/components/SearchComp";
 import AdSection from "@/components/homeScreen/AdSection";
-import Filter from "@/components/homeScreen/Filter";
 import PropertyCard2 from "@/components/homeScreen/PropertyCard2";
 // images imports
 import building from "@/assets/images/building.png";
@@ -54,7 +54,9 @@ const Index = () => {
           </View>
         </View>
         {/* ---------------------------------- */}
-        <SearchComp />
+        <TouchableOpacity onPress={() => router.push("/(AppScreens)/search")}>
+          <SearchComp />
+        </TouchableOpacity>
         {/* ---------------------------------- */}
 
         <AdSection
