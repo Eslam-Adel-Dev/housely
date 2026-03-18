@@ -16,7 +16,10 @@ export interface screenWrapperProps {
 
 export interface CheckboxWithLabelProps {
   label: string;
+  classNameContainer: string;
   classNameLabel?: string;
+  classNameCheckBox?: string;
+  styleLabel?: object;
   checked?: boolean;
   onCheckedChange?: (checked: boolean) => void;
 }
@@ -26,6 +29,19 @@ export interface CustomButtonProps {
   textClassName?: string;
   onButtonPress?: () => void;
   children: React.ReactNode;
+}
+
+export interface SearchProps {
+  handleOpenFilterModal: () => void;
+}
+
+export interface BottomSheetCompProps {
+  snapPoints: string[];
+  children: React.ReactNode;
+  index?: number;
+  onChange?: (index: number) => void;
+  onClose?: () => void;
+  enablePanDownToClose?: boolean;
 }
 
 export interface tabBarIconProps {
