@@ -8,13 +8,13 @@ import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 // swiper imports
 import Swiper from "react-native-swiper";
 // data imports
-import { properties } from "@/data/data";
+import { properties, users } from "@/data/data";
 // map imports
 import { Camera, MapView, MarkerView } from "@maplibre/maplibre-react-native";
 // flashlist imports
 import { FlashList } from "@shopify/flash-list";
 // expo imports
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 // icons imports
 import Area from "@/assets/icons/area.svg";
 import Bath from "@/assets/icons/bath.svg";
@@ -38,6 +38,16 @@ const PropertyComp = () => {
   const { isLiked, toggleLike } = useFavoriteProperties(state);
   const { handleLinking } = usePhoneLinking(state.agent.phone);
   const { handleShare } = useSharePropertyLink(id);
+  const agent = Object.values(users).filter(
+    (user) => user._id === state.agent.id,
+  )[0];
+  const router = useRouter();
+  // ----------------------------------------------
+
+  const handleChat = () => {
+    router.push(`/chat/${agent._id}`);
+  };
+  // ----------------------------------------------
 
   if (!state)
     return (
@@ -45,6 +55,8 @@ const PropertyComp = () => {
         <Text>Property not found</Text>
       </ScreenWrapper>
     );
+
+  // ----------------------------------------------
 
   return (
     <ScreenWrapper className="relative">
@@ -164,7 +176,11 @@ const PropertyComp = () => {
             <View className="flex-row items-center justify-between">
               <View className="flex-row items-center gap-4">
                 <Image
-                  source={{ uri: "https://www.loremfaces.net/96/id/1.jpg" }}
+                  source={{
+                    uri: agent
+                      ? agent.image
+                      : "https://www.loremfaces.net/96/id/1.jpg",
+                  }}
                   className="w-14 h-14 rounded-full bg-primary-300"
                   resizeMode="contain"
                 />
@@ -182,7 +198,10 @@ const PropertyComp = () => {
                 >
                   <Call_Icon size={30} />
                 </TouchableOpacity>
-                <TouchableOpacity className="bg-primary-100/40 p-2 rounded-full">
+                <TouchableOpacity
+                  className="bg-primary-100/40 p-2 rounded-full"
+                  onPress={handleChat}
+                >
                   <Chat_Icon size={30} />
                 </TouchableOpacity>
               </View>
