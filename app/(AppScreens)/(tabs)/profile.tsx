@@ -18,16 +18,27 @@ import profilePic from "@/assets/images/profilePic.jpg";
 import { ProfileProps } from "@/types/type";
 // context imports
 import { useUserContext } from "@/context/userContext";
+// hooks imports
+import { useMediaPicker } from "@/hooks/useMediaPicker";
+// toast imports
+import Toast from "react-native-toast-message";
 
 //=========================================================
 
 const Profile = ({ optionName, Icon }: ProfileProps) => {
-  const { logout } = useUserContext();
   const router = useRouter();
-
+  const { logout } = useUserContext();
+  const { media, handleMediaPicker } = useMediaPicker();
   const handleLogout = () => {
     logout();
     router.push("/(authScreens)/login");
+    setTimeout(() => {
+      Toast.show({
+        type: "info",
+        text1: "Signed out 👋",
+        text2: "You have been successfully signed out.",
+      });
+    }, 300);
   };
 
   return (
@@ -39,12 +50,15 @@ const Profile = ({ optionName, Icon }: ProfileProps) => {
         {/* --------------------------------------- */}
         <View className="py-12 w-full items-center justify-center gap-4 border-b border-zinc-200">
           <View>
-            <View className="absolute bottom-0 right-0 h-12 w-12 rounded-full bg-primary-600 items-center justify-center z-10">
+            <TouchableOpacity
+              className="absolute bottom-0 right-0 h-12 w-12 rounded-full bg-primary-600 items-center justify-center z-10"
+              onPress={() => handleMediaPicker("images")}
+            >
               <Camera className="w-[60%] h-[60%]" />
-            </View>
+            </TouchableOpacity>
             <Image
               className="rounded-full"
-              source={profilePic}
+              source={media ? { uri: media.uri } : profilePic}
               style={{ width: 150, height: 150 }}
               resizeMode="cover"
             />
