@@ -17,6 +17,8 @@ import Wallet from "@/assets/icons/profileScreen/Wallet.svg";
 import Bath from "@/assets/icons/searchScreen/bath.svg";
 import Bed from "@/assets/icons/searchScreen/bed.svg";
 import WIFI from "@/assets/icons/Wifi.svg";
+// types imports
+import { PropertyData2 } from "@/types/type";
 //=========================================================
 
 export const onboardingData = [
@@ -85,46 +87,69 @@ export const propertyData = [
 
 //=========================================================
 
-export const propertyData2 = [
+export const propertyData2: PropertyData2[] = [
   {
     id: 1,
-    propertyName: "Ayana Homestay",
-    location: "Imogiri, Yogyakarta",
-    price: 310,
+    propertyName: "Amarylis Apartment",
+    location: "Zamalek, Cairo",
+    price: 450,
     image: building1,
     rate: 5,
+    status: "Completed",
   },
   {
     id: 2,
-    propertyName: "Ayana Homestay",
-    location: "Imogiri, Yogyakarta",
-    price: 310,
+    propertyName: "Nia Homestay",
+    location: "Maadi, Cairo",
+    price: 280,
     image: building2,
     rate: 4.3,
+    status: "Cancelled",
   },
   {
     id: 3,
-    propertyName: "Ayana Homestay",
-    location: "Imogiri, Yogyakarta",
-    price: 310,
+    propertyName: "Heliopolis Villa",
+    location: "Heliopolis, Cairo",
+    price: 1200,
     image: building3,
     rate: 5,
+    status: "Completed",
   },
   {
     id: 4,
-    propertyName: "Ayana Homestay",
-    location: "Imogiri, Yogyakarta",
-    price: 310,
+    propertyName: "Garden View Giza",
+    location: "Dokki, Giza",
+    price: 350,
     image: building4,
     rate: 2.5,
+    status: "Cancelled",
   },
   {
     id: 5,
-    propertyName: "Ayana Homestay",
-    location: "Imogiri, Yogyakarta",
+    propertyName: "Terrace Studio",
+    location: "Dokki, Giza",
     price: 310,
     image: building5,
     rate: 4.4,
+    status: "Completed",
+  },
+  {
+    id: 6,
+    propertyName: "Nile View Apartment",
+    location: "Zamalek, Cairo",
+    price: 500,
+    image: building1,
+    rate: 4.8,
+    status: "Completed",
+  },
+  {
+    id: 7,
+    propertyName: "Pyramids View Villa",
+    location: "Giza",
+    price: 1500,
+    image: building2,
+    rate: 5,
+    status: "Cancelled",
   },
 ];
 
@@ -233,7 +258,7 @@ export const users = {
     name: "Omar Hassan",
     lastMessage: "The studio is move-in ready!",
     messageTime: new Date("2026-02-07T04:15:00Z"),
-    image: "https://www.loremfaces.net/128/id/6.jpg",
+    image: "https://www.loremfaces.net/128/id/3.jpg",
   },
   me: {
     _id: 1,
@@ -254,7 +279,7 @@ export const users = {
     name: "Karim Fathy",
     lastMessage: "The townhouse has a beautiful private garden.",
     messageTime: new Date("2026-02-07T02:00:00Z"),
-    image: "https://www.loremfaces.net/128/id/7.jpg",
+    image: "https://www.loremfaces.net/128/id/5.jpg",
   },
 };
 //=========================================================
