@@ -1,15 +1,23 @@
-// react
+// react imports
 import { createContext, useContext, useMemo, useState } from "react";
 // types imports
-import { contextProviderProps, Properties } from "@/types/type";
+import {
+  contextProviderProps,
+  Coordinates,
+  Properties,
+  UserContextType,
+} from "@/types/type";
 
-export const UserValueContext = createContext<any>(null);
+//================================================
+
+export const UserValueContext = createContext<UserContextType | null>(null);
 
 //================================================
 
 const UserContext = ({ children }: contextProviderProps) => {
   const [isLogged, setIsLogged] = useState(false);
   const [favorites, setFavorites] = useState<Properties>([]);
+  const [userLocation, setUserLocation] = useState<Coordinates | null>(null);
 
   const login = () => setIsLogged(true);
   const logout = () => setIsLogged(false);
@@ -20,10 +28,12 @@ const UserContext = ({ children }: contextProviderProps) => {
       favorites,
       login,
       logout,
+      userLocation,
+      setUserLocation,
       setIsLogged,
       setFavorites,
     }),
-    [isLogged, favorites],
+    [isLogged, favorites, userLocation],
   );
 
   return (

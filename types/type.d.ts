@@ -185,6 +185,17 @@ export interface ImageContextType {
   hideImage: () => void;
 }
 
+export interface UserContextType {
+  isLogged: boolean;
+  favorites: Properties;
+  login: () => void;
+  logout: () => void;
+  userLocation: Coordinates | null;
+  setUserLocation: (location: Coordinates | null) => void;
+  setIsLogged: (isLogged: boolean) => void;
+  setFavorites: (favorites: Properties) => void;
+}
+
 //==============================================
 // forms types
 
