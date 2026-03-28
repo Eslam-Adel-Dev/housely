@@ -1,10 +1,10 @@
+// react native imports
+import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 // components imports
 import CustomButton from "@/components/CustomButton";
 import TitleBar from "@/components/layout/TitleBar";
 import ReviewComp from "@/components/propertyScreen/Review";
 import ScreenWrapper from "@/components/ScreenWrapper";
-// react native imports
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 // swiper imports
 import Swiper from "react-native-swiper";
 // data imports
@@ -42,13 +42,17 @@ const PropertyComp = () => {
     (user) => user._id === state.agent.id,
   )[0];
   const router = useRouter();
-  // ----------------------------------------------
 
+  // mavigation functions
   const handleChat = () => {
     router.push(`/chat/${agent._id}`);
   };
-  // ----------------------------------------------
 
+  const handleRentNow = () => {
+    router.push(`/property/rent/${id}`);
+  };
+
+  // render function
   if (!state)
     return (
       <ScreenWrapper>
@@ -56,8 +60,7 @@ const PropertyComp = () => {
       </ScreenWrapper>
     );
 
-  // ----------------------------------------------
-
+  // main return
   return (
     <ScreenWrapper className="relative">
       <ScrollView>
@@ -276,7 +279,7 @@ const PropertyComp = () => {
       <CustomButton
         textClassName="text-white"
         className="z-10 w-full rounded-xl"
-        onButtonPress={() => {}}
+        onButtonPress={handleRentNow}
       >
         Rent Now
       </CustomButton>
