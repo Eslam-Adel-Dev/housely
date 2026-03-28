@@ -228,6 +228,13 @@ export interface LocationFullDetailsProps {
   locationName: string;
 }
 
+export interface CalendarCompProps {
+  selectedRange: {
+    startDate: string;
+    endDate: string;
+  };
+  onSelectRange: (range: { startDate: string; endDate: string }) => void;
+}
 //==============================================
 // context types
 
