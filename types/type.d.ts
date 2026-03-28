@@ -202,7 +202,14 @@ export interface PropertyData2 {
   rate: number;
   status: BookingStatus;
 }
- 
+
+export interface EmptyStateProps {
+  title: string;
+  subTitle?: string | React.ReactNode;
+  ImageComp: React.FC<SvgProps>;
+  imageSize?: number;
+}
+
 //==============================================
 // context types
 
