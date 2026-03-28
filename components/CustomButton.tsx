@@ -1,20 +1,31 @@
 // react imports
-import { Text, TouchableOpacity } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity } from "react-native";
 // types imports
 import { CustomButtonProps } from "@/types/type";
+
+//=============================================
 
 const CustomButton = ({
   className,
   textClassName,
   children,
   onButtonPress,
+  loading,
+  disabled,
 }: CustomButtonProps) => {
   return (
     <TouchableOpacity
       onPress={onButtonPress}
-      className={`${className} bg-primary-600 py-4`}
+      disabled={disabled || loading}
+      className={`${className} bg-primary-600 py-4 ${disabled || loading ? "opacity-50" : ""}`}
     >
-      <Text className={`${textClassName} text-center text-xl`}>{children}</Text>
+      {loading ? (
+        <ActivityIndicator color="white" />
+      ) : (
+        <Text className={`${textClassName} text-center text-xl`}>
+          {children}
+        </Text>
+      )}
     </TouchableOpacity>
   );
 };
