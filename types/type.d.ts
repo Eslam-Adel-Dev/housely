@@ -1,4 +1,9 @@
 // types
+export type BookingStatus =
+  | "Waiting Payment"
+  | "Cancelled"
+  | "Completed"
+  | "Checking";
 
 export type size = {
   width: number;
@@ -171,6 +176,16 @@ export interface Property {
 
 export type Properties = Property[];
 
+export interface PropertyData2 {
+  id: number;
+  propertyName: string;
+  location: string;
+  price: number;
+  image: any;
+  rate: number;
+  status: BookingStatus;
+}
+ 
 //==============================================
 // context types
 
