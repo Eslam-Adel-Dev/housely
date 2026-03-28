@@ -1,17 +1,24 @@
 // react native imports
 import { View } from "react-native";
 // components imports
-import EmptyBooking from "@/components/bookingScreen/EmptyBooking";
+import NoFavoriteImage from "@/assets/images/NoLocation.svg";
 import PropertyCard2 from "@/components/homeScreen/PropertyCard2";
 import TitleBar from "@/components/layout/TitleBar";
 import ScreenWrapper from "@/components/ScreenWrapper";
+import EmptyState from "@/components/ui/EmptyState";
 // context imports
 import { useUserContext } from "@/context/userContext";
 // flashlist imports
 import { FlashList } from "@shopify/flash-list";
+// types imports
+import { Property } from "@/types/type";
+
+//===================================================================
 
 const Favorite = () => {
-  const { favorites } = useUserContext();
+  const { favorites } = useUserContext() as { favorites: Property[] };
+
+  // ui part
   return (
     <ScreenWrapper>
       <TitleBar title="Favorite" />
@@ -32,7 +39,13 @@ const Favorite = () => {
             ? { flex: 1, justifyContent: "center", alignItems: "center" }
             : {}
         }
-        ListEmptyComponent={<EmptyBooking />}
+        ListEmptyComponent={
+          <EmptyState
+            ImageComp={NoFavoriteImage}
+            title="You have no favorites yet"
+            subTitle="Start exploring and save your favorite properties here!"
+          />
+        }
       />
     </ScreenWrapper>
   );

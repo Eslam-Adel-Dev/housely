@@ -1,8 +1,9 @@
 // components imports
+import EmptyBookingImage from "@/assets/images/NoBooking.svg";
 import BookingCard from "@/components/bookingScreen/BookingCard";
-import EmptyBooking from "@/components/bookingScreen/EmptyBooking";
 import TitleBar from "@/components/layout/TitleBar";
 import ScreenWrapper from "@/components/ScreenWrapper";
+import EmptyState from "@/components/ui/EmptyState";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 // data imports
 import { propertyData2 } from "@/data/data";
@@ -12,11 +13,22 @@ import { TabsProps } from "@/types/type";
 import { FlashList } from "@shopify/flash-list";
 // react imports
 import { useState } from "react";
-// react native imports
 import { Text, View } from "react-native";
+//================================================================
 
 const Booking = () => {
   const [tabsValue, setTabsValue] = useState("upcoming");
+  const cancelledProperties = propertyData2.filter(
+    (item) => item.status === "Cancelled",
+  );
+  const completedProperties = propertyData2.filter(
+    (item) => item.status === "Completed",
+  );
+  const upcomingProperties = propertyData2.filter(
+    (item) => item.status === "Waiting Payment" || item.status === "Checking",
+  );
+
+  // ui part
   return (
     <ScreenWrapper className="gap-7">
       <TitleBar title="My Booking" />
@@ -34,42 +46,79 @@ const Booking = () => {
           <TabsContent value="upcoming" className="flex-1">
             <FlashList
               className="py-5"
-              data={[]}
+              data={upcomingProperties}
               renderItem={({ item }) => (
                 <BookingCard {...item} date={"08 Aug - 12 Aug"} />
               )}
               keyExtractor={(item) => item.id.toString()}
               ItemSeparatorComponent={() => <View className="h-4" />}
-              ListEmptyComponent={<EmptyBooking />}
+              ListEmptyComponent={
+                <EmptyState
+                  ImageComp={EmptyBookingImage}
+                  title="You have no upcoming booking"
+                  subTitle={
+                    <Text className="text-md text-zinc-400 text-center">
+                      are you looking fo a{" "}
+                      <Text className="text-primary-500"> completed</Text> or{" "}
+                      <Text className="text-primary-500">cancelled</Text>{" "}
+                      booking ?
+                    </Text>
+                  }
+                />
+              }
               contentContainerStyle={{
-                marginVertical: "auto",
+                marginVertical: upcomingProperties.length > 0 ? 0 : "auto",
               }}
             />
           </TabsContent>
+
+          {/* ----------------------------------- */}
+
           <TabsContent value="completed" className="flex-1">
             <FlashList
               className="py-5"
-              data={propertyData2}
+              data={completedProperties}
               renderItem={({ item }) => (
                 <BookingCard {...item} date={"08 Aug - 12 Aug"} />
               )}
               keyExtractor={(item) => item.id.toString()}
               ItemSeparatorComponent={() => <View className="h-4" />}
-              ListEmptyComponent={<EmptyBooking />}
+              ListEmptyComponent={
+                <EmptyState
+                  ImageComp={EmptyBookingImage}
+                  title="You have no completed booking"
+                />
+              }
+              contentContainerStyle={{
+                marginVertical: completedProperties.length > 0 ? 0 : "auto",
+              }}
             />
           </TabsContent>
+
+          {/* ----------------------------------- */}
+
           <TabsContent value="cancelled" className="flex-1">
             <FlashList
               className="py-5"
-              data={propertyData2}
+              data={cancelledProperties}
               renderItem={({ item }) => (
                 <BookingCard {...item} date={"08 Aug - 12 Aug"} />
               )}
               keyExtractor={(item) => item.id.toString()}
               ItemSeparatorComponent={() => <View className="h-4" />}
-              ListEmptyComponent={<EmptyBooking />}
+              ListEmptyComponent={
+                <EmptyState
+                  ImageComp={EmptyBookingImage}
+                  title="You have no cancelled booking"
+                />
+              }
+              contentContainerStyle={{
+                marginVertical: cancelledProperties.length > 0 ? 0 : "auto",
+              }}
             />
           </TabsContent>
+
+          {/* ----------------------------------- */}
         </Tabs>
       </View>
     </ScreenWrapper>
@@ -79,6 +128,8 @@ const Booking = () => {
 export default Booking;
 
 //=====================================================
+
+// tab component
 
 export const Tab = ({
   value,
