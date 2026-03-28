@@ -9,7 +9,12 @@ import Toast from "react-native-toast-message";
 // context imports
 import ImageContext from "@/context/imageContext";
 import UserContext from "@/context/userContext";
+// gesture handler imports
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+// components imports
+import NetworkMonitor from "@/components/NetworkMonitor";
+
+//================================================================
 
 export default function RootLayout() {
   return (
@@ -29,7 +34,8 @@ export default function RootLayout() {
             </Stack>
           </SafeAreaView>
         </GestureHandlerRootView>
-        <Toast position="bottom" bottomOffset={20} />
+        <NetworkMonitor />
+        <Toast position="bottom" bottomOffset={30} />
       </ImageContext>
     </UserContext>
   );
