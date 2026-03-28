@@ -167,6 +167,18 @@ export interface ImagePreviewProps {
   onClose: () => void;
 }
 
+export interface CreditCardProps {
+  cardData: {
+    number: string;
+    name: string;
+    expiry: string;
+    cvv: string;
+  };
+  setCardData: (data: any) => void;
+  isFlipped: boolean;
+  setIsFlipped: (flipped: boolean) => void;
+}
+
 export interface Property {
   id: string;
   name: string;
