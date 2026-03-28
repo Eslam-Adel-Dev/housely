@@ -45,6 +45,8 @@ export interface CustomButtonProps {
   textClassName?: string;
   onButtonPress?: () => void;
   children: React.ReactNode;
+  loading?: boolean;
+  disabled?: boolean;
 }
 
 export interface SearchProps {
