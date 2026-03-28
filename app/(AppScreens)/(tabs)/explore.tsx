@@ -1,77 +1,170 @@
+// react imports
+import { useEffect, useRef, useState } from "react";
+import {
+  ActivityIndicator,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+// images imports
+import location from "@/assets/icons/Location.png";
+import HomeGreen from "@/assets/icons/homepage-green-icon.svg";
+import MapPin from "@/assets/icons/map-pin-icon.svg";
+import NoLocationImage from "@/assets/images/NoLocation.svg";
+// components imports
+import CustomButton from "@/components/CustomButton";
+import ScreenWrapper from "@/components/ScreenWrapper";
+import BottomSheetComp from "@/components/bottomSheets/BottomSheetComp";
+import PropertyCard2 from "@/components/homeScreen/PropertyCard2";
+import LocationFullDetails from "@/components/layout/LocationFullDetails";
+import TitleBar from "@/components/layout/TitleBar";
+// icons imports
+import { LocateFixed } from "lucide-react-native";
 // map imports
 import {
   Camera,
   MapView,
   MarkerView,
-  UserLocation,
+  PointAnnotation,
 } from "@maplibre/maplibre-react-native";
-// react imports
-import { useEffect, useState } from "react";
-// images imports
-import HomeGreen from "@/assets/icons/homepage-green-icon.svg";
-import HomeRed from "@/assets/icons/homepage-red-icon.svg";
-import MapPin from "@/assets/icons/map-pin-icon.svg";
-import NoLocationImage from "@/assets/images/NoLocation.svg";
-// location permission
-import * as Location from "expo-location";
-// react native imports
-import { Alert, Text, View } from "react-native";
-// components imports
-import CustomButton from "@/components/CustomButton";
-import ScreenWrapper from "@/components/ScreenWrapper";
-// toast import
-import TitleBar from "@/components/layout/TitleBar";
-import Toast from "react-native-toast-message";
+// bottom sheet import
+import BottomSheet from "@gorhom/bottom-sheet";
+// data imports
+import { properties } from "@/data/data";
+// hooks imports
+import useLocationName from "@/hooks/useLocationName";
+import useUserLocation from "@/hooks/useUserLocation";
+// types imports
+import { Property } from "@/types/type";
+// context imports
+import { useUserContext } from "@/context/userContext";
 //=========================================================
 
 const Explore = () => {
+  const [selectedFilter, setSelectedFilter] = useState(1);
+  const [showFullLocation, setShowFullLocation] = useState(false);
+  const [isRelocating, setIsRelocating] = useState(false);
   const [selectedPoint, setSelectedPoint] = useState<number[] | null>(null);
-  const [selectedPlace, setSelectedPlace] = useState<number[] | null>(null);
-  const [latitude, setLatitude] = useState(0);
-  const [longitude, setLongitude] = useState(0);
-  const [gpsLocation, setGpsLocation] = useState<
-    Location.LocationObject | number[] | null
-  >(null);
+  const [selectedPlace, setSelectedPlace] = useState<Property | null>(null);
+  const {
+    latitude,
+    longitude,
+    gpsLocation,
+    getCurrentLocation,
+    setLatitude,
+    setLongitude,
+    loading,
+  } = useUserLocation();
+  const { userLocation, setUserLocation } = useUserContext();
+  const locationName = useLocationName(
+    userLocation?.latitude,
+    userLocation?.longitude,
+  );
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const cameraRef = useRef<any>(null);
+  const initialZoomSet = useRef(false);
+  const displayLat = userLocation?.latitude || latitude;
+  const displayLon = userLocation?.longitude || longitude;
 
-  const showToast = (message: string) => {
-    Toast.show({
-      type: "error",
-      text1: message,
+  //----------------------------------------------------------
+  // functions
+
+  // handle manual location set
+  const handleSetDefaultLocation = () => {
+    const lat = 30.0444;
+    const lon = 31.2357;
+    setLatitude(lat);
+    setLongitude(lon);
+    setUserLocation({ latitude: lat, longitude: lon });
+  };
+
+  // handle gps relocation
+  const handleRelocating = () => {
+    setIsRelocating(true);
+    getCurrentLocation();
+  };
+
+  // handle map press to set location
+  const handleMapPress = (e: any) => {
+    if (!e?.geometry?.coordinates) return;
+    const [lon, lat] = e.geometry.coordinates;
+    setSelectedPoint([lon, lat]);
+    setUserLocation({
+      latitude: lat,
+      longitude: lon,
     });
   };
 
-  //-------------------------------------------
-
-  const getCurrentLocation = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      showToast("Permission to access location was denied");
-      Alert.alert("Permission to access location was denied");
-      return;
-    }
-    const location = await Location.getCurrentPositionAsync();
-    console.log(location);
-
-    if (!location) {
-      return;
-    }
-
-    setGpsLocation(location);
-    setLatitude(location.coords.latitude);
-    setLongitude(location.coords.longitude);
+  // handle property marker selection
+  const handlePropertySelect = (property: Property) => {
+    setSelectedPlace(property);
+    bottomSheetRef.current?.expand();
   };
 
+  //----------------------------------------------------------
+  // useEffects
+
+  // useEffect to set the initial zoom level
   useEffect(() => {
-    getCurrentLocation();
-  }, []);
+    if (displayLon && displayLat && cameraRef.current) {
+      const cameraOptions: any = {
+        centerCoordinate: [displayLon, displayLat],
+        animationDuration: 1000,
+      };
 
-  //-------------------------------------------
+      // Set initial zoom level only once
+      if (!initialZoomSet.current) {
+        cameraOptions.zoomLevel = 10;
+        initialZoomSet.current = true;
+      }
 
-  if (!gpsLocation && !latitude && !longitude) {
+      cameraRef.current.setCamera(cameraOptions);
+    }
+  }, [displayLat, displayLon]);
+
+  // useEffect to auto-sync from hook if context is empty
+  useEffect(() => {
+    if (longitude && latitude && !userLocation) {
+      setUserLocation({ latitude, longitude });
+    }
+  }, [longitude, latitude, userLocation]);
+
+  // useEffect to set the selected point
+  useEffect(() => {
+    if (userLocation && !selectedPoint) {
+      setSelectedPoint([userLocation.longitude, userLocation.latitude]);
+    }
+  }, [userLocation]);
+
+  // useEffect to handle the relocation
+  useEffect(() => {
+    if (isRelocating && gpsLocation) {
+      // @ts-ignore
+      const { latitude, longitude } = gpsLocation.coords || {};
+      if (latitude && longitude) {
+        setUserLocation({ latitude, longitude });
+        setSelectedPoint([longitude, latitude]);
+        cameraRef.current?.setCamera({
+          centerCoordinate: [longitude, latitude],
+          zoomLevel: 15,
+          animationDuration: 1000,
+        });
+        setIsRelocating(false);
+      }
+    }
+  }, [gpsLocation, isRelocating]);
+
+  //----------------------------------------------------------
+
+  // ui when no location
+
+  if (!userLocation && !gpsLocation && !latitude && !longitude) {
     return (
       <ScreenWrapper className="flex-1 ">
         <TitleBar title="Explore" />
         <View className="flex-1 items-center justify-center">
+          {/* No location Sections */}
           <NoLocationImage size={100} />
           <View className="w-full items-center justify-center gap-3 my-10">
             <Text className="font-bold text-2xl text-center">
@@ -84,20 +177,22 @@ const Explore = () => {
             </View>
           </View>
           <View className="w-full gap-3">
+            {/* Use current location button */}
             <CustomButton
               className="rounded-lg"
               textClassName="text-white"
               onButtonPress={getCurrentLocation}
+              loading={loading}
             >
               Use current location
             </CustomButton>
+
+            {/* Select it manually button */}
             <CustomButton
               className="rounded-lg bg-white border border-primary-600"
               textClassName="text-primary-600"
-              onButtonPress={() => {
-                setLatitude(30.0444);
-                setLongitude(31.2357);
-              }}
+              disabled={loading}
+              onButtonPress={handleSetDefaultLocation}
             >
               Select it manually
             </CustomButton>
@@ -107,50 +202,102 @@ const Explore = () => {
     );
   }
 
+  // ui when location is selected
   return (
-    <MapView
-      style={{ flex: 1 }}
-      onPress={(e: any) => {
-        setSelectedPoint(e.geometry.coordinates);
-      }}
-      mapStyle={{
-        version: 8,
-        sources: {
-          osm: {
-            type: "raster",
-            tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
-            tileSize: 256,
-          },
-        },
-        layers: [
-          {
-            id: "osm",
-            type: "raster",
-            source: "osm",
-          },
-        ],
-      }}
-    >
-      <Camera centerCoordinate={[longitude, latitude]} zoomLevel={16} />
-      <UserLocation />
+    <View className="flex-1">
+      {/* Location name button */}
+      <TouchableOpacity
+        onPress={() => setShowFullLocation(true)}
+        className="absolute top-4 left-[4%] w-[75%] bg-[#fcfcfd] p-3 rounded-2xl shadow-lg border border-zinc-200 flex-row items-center gap-2 z-10"
+      >
+        <Image source={location} className="size-7" resizeMode="contain" />
+        <Text className="text-lg font-bold flex-1" numberOfLines={1}>
+          {locationName || "Select Location"}
+        </Text>
+      </TouchableOpacity>
 
-      {/* selected point */}
-      {selectedPoint && (
-        <MarkerView coordinate={selectedPoint}>
-          <MapPin width={30} height={30} />
-        </MarkerView>
+      {/* Relocate to GPS location button */}
+      <TouchableOpacity
+        onPress={handleRelocating}
+        disabled={loading}
+        className={`absolute bottom-4 right-4 bg-[#fcfcfd] p-4 rounded-full shadow-lg border border-zinc-200 z-10 `}
+      >
+        {loading ? (
+          <ActivityIndicator size="small" color="#6941C6" />
+        ) : (
+          <LocateFixed size={24} color="#6941C6" />
+        )}
+      </TouchableOpacity>
+
+      {/* map */}
+      <MapView
+        style={{ flex: 1 }}
+        onPress={handleMapPress}
+        mapStyle={{
+          version: 8,
+          sources: {
+            osm: {
+              type: "raster",
+              tiles: [
+                "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                "https://b.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                "https://c.tile.openstreetmap.org/{z}/{x}/{y}.png",
+              ],
+              tileSize: 256,
+            },
+          },
+          layers: [
+            {
+              id: "osm",
+              type: "raster",
+              source: "osm",
+            },
+          ],
+        }}
+      >
+        <Camera ref={cameraRef} />
+
+        {/* selected point */}
+        {selectedPoint && (
+          <MarkerView coordinate={selectedPoint}>
+            <MapPin width={30} height={30} />
+          </MarkerView>
+        )}
+
+        {/* available properties */}
+        {properties.map((property) => {
+          return (
+            <PointAnnotation
+              key={property.id}
+              id={property.id}
+              coordinate={[property.coords.longitude, property.coords.latitude]}
+              onSelected={() => handlePropertySelect(property)}
+            >
+              <HomeGreen width={30} height={30} />
+            </PointAnnotation>
+          );
+        })}
+      </MapView>
+
+      {/* bottom sheet of selected property */}
+      {selectedPlace && (
+        <BottomSheetComp
+          ref={bottomSheetRef}
+          snapPoints={["40%"]}
+          index={0}
+          onClose={() => setSelectedPlace(null)}
+        >
+          <PropertyCard2 {...selectedPlace} fullWidth={true} />
+        </BottomSheetComp>
       )}
 
-      {/* unavailable properties */}
-      <MarkerView coordinate={[31.2, 30]}>
-        <HomeRed width={30} height={30} />
-      </MarkerView>
-
-      {/* available properties */}
-      <MarkerView coordinate={[35.2, 25]}>
-        <HomeGreen width={30} height={30} />
-      </MarkerView>
-    </MapView>
+      {/* full location details */}
+      <LocationFullDetails
+        visible={showFullLocation}
+        onClose={() => setShowFullLocation(false)}
+        locationName={locationName}
+      />
+    </View>
   );
 };
 
