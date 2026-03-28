@@ -1,3 +1,10 @@
+// imports
+import { Dispatch, SetStateAction } from "react";
+import { ImageSourcePropType as ImageSourceProp } from "react-native";
+import { SvgProps } from "react-native-svg";
+
+//==============================================
+
 // types
 export type BookingStatus =
   | "Waiting Payment"
@@ -8,6 +15,10 @@ export type BookingStatus =
 export type size = {
   width: number;
   height: number;
+};
+
+export type fullWidthType = {
+  fullWidth?: boolean;
 };
 
 //==============================================
@@ -47,6 +58,8 @@ export interface BottomSheetCompProps {
   onChange?: (index: number) => void;
   onClose?: () => void;
   enablePanDownToClose?: boolean;
+  keyboardBehavior?: "extend" | "fillParent" | "interactive";
+  keyboardBlurBehavior?: "none" | "restore";
 }
 
 export interface tabBarIconProps {
@@ -66,11 +79,13 @@ export interface AdSectionProps {
 }
 
 export interface BookingCardProps {
+  id: number;
   propertyName: string;
   location?: string;
   date?: Date | string | number;
-  image: React.ReactNode | ImageSourceProp | string | number;
+  image: ImageSourceProp | string | number;
   rate: number;
+  status: BookingStatus;
   fullScreenWidth?: boolean;
 }
 

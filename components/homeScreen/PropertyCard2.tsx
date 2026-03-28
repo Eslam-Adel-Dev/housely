@@ -7,28 +7,25 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 // components imports
 import RateStars from "../RateStars";
 // types imports
-import useScreenDimensions from "@/hooks/useScreenDimensions";
-import { avgPropertyRatingFunction } from "@/lib/utils";
-import { Property } from "@/types/type";
+import { Property, fullWidthType } from "@/types/type";
 // hooks
 import useFavoriteProperties from "@/hooks/useFavoriteProperties";
+import useScreenDimensions from "@/hooks/useScreenDimensions";
 // expo router
 import { useRouter } from "expo-router";
-
-//=============================================
-
-type fullWidthType = {
-  fullWidth?: boolean;
-};
+// utils
+import { avgPropertyRatingFunction } from "@/lib/utils";
 
 //=============================================
 
 const PropertyCard2 = (props: Property & fullWidthType) => {
   //--------------------------------
-  const { id, name, location, rentPerMonth, image, reviews, fullWidth } = props;
+  const { id, name, location, rentPerMonth, images, reviews, fullWidth } =
+    props;
   const { isLiked: isPropertyLiked, toggleLike } = useFavoriteProperties(props);
   const { screenWidth } = useScreenDimensions();
   const avgRating = avgPropertyRatingFunction(reviews);
+  const image = images && images[0];
   const router = useRouter();
   //--------------------------------
 

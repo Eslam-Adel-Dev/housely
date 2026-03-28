@@ -1,9 +1,14 @@
-import { BottomSheetCompProps } from "@/types/type";
+// react imports
+import React, { forwardRef, useCallback } from "react";
+// bottom sheet imports
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
-import React, { forwardRef, useCallback } from "react";
+// types imports
+import { BottomSheetCompProps } from "@/types/type";
+
+//=============================================
 
 const BottomSheetComp = forwardRef<BottomSheet, BottomSheetCompProps>(
   (
@@ -14,6 +19,8 @@ const BottomSheetComp = forwardRef<BottomSheet, BottomSheetCompProps>(
       onChange,
       onClose,
       enablePanDownToClose = true,
+      keyboardBehavior = "fillParent",
+      keyboardBlurBehavior = "restore",
     },
     ref,
   ) => {
@@ -38,6 +45,8 @@ const BottomSheetComp = forwardRef<BottomSheet, BottomSheetCompProps>(
         onChange={onChange}
         onClose={onClose}
         enablePanDownToClose={enablePanDownToClose}
+        keyboardBehavior={keyboardBehavior}
+        keyboardBlurBehavior={keyboardBlurBehavior}
         backdropComponent={renderBackdrop}
         backgroundStyle={{
           backgroundColor: "white",
@@ -64,5 +73,7 @@ const BottomSheetComp = forwardRef<BottomSheet, BottomSheetCompProps>(
 );
 
 BottomSheetComp.displayName = "BottomSheetComp";
+
+//=============================================
 
 export default BottomSheetComp;

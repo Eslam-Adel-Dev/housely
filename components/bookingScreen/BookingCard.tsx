@@ -2,7 +2,6 @@
 import Location from "@/assets/icons/Location.svg";
 // react imports
 import { Image, Text, View } from "react-native";
-// components imports
 // types imports
 import { BookingCardProps } from "@/types/type";
 
@@ -13,11 +12,15 @@ const BookingCard = ({
   location,
   date,
   image,
+  status,
 }: BookingCardProps) => {
+  //------------------------
+  const imageSource = typeof image === "string" ? { uri: image } : image;
+
   return (
     <View className="flex-row h-[90px] gap-4 border-b border-zinc-200 px-2 pb-4">
       <Image
-        source={image}
+        source={imageSource}
         resizeMode="cover"
         className="h-full w-[110px] rounded-lg"
       />
@@ -35,8 +38,8 @@ const BookingCard = ({
         {/* ------------------------ */}
 
         <View className="flex-row items-center justify-between">
-          <Text className="text-sm text-zinc-500/80">{date}</Text>
-          <PropertyStatus status="Waiting Payment" />
+          <Text className="text-sm text-zinc-500/80">{date?.toString()}</Text>
+          <PropertyStatus status={status} />
         </View>
       </View>
     </View>
