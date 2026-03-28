@@ -210,6 +210,12 @@ export interface EmptyStateProps {
   imageSize?: number;
 }
 
+export interface LocationFullDetailsProps {
+  visible: boolean;
+  onClose: () => void;
+  locationName: string;
+}
+
 //==============================================
 // context types
 
