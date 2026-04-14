@@ -13,7 +13,9 @@ import UserContext from "@/context/userContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 // components imports
 import NetworkMonitor from "@/components/NetworkMonitor";
-
+// tanstack imports
+import queryClient from "@/api/queryClient";
+import { QueryClientProvider } from "@tanstack/react-query";
 //================================================================
 
 export default function RootLayout() {
@@ -21,18 +23,20 @@ export default function RootLayout() {
     <UserContext>
       <ImageContext>
         <GestureHandlerRootView className="flex-1 bg-transparent">
-          <SafeAreaView className="flex-1">
-            <Stack
-              screenOptions={{
-                headerShown: false,
-                presentation: "transparentModal",
-              }}
-            >
-              <Stack.Screen name="(AppScreens)" />
-              <Stack.Screen name="(authScreens)" />
-              <Stack.Screen name="onboarding" />
-            </Stack>
-          </SafeAreaView>
+          <QueryClientProvider client={queryClient}>
+            <SafeAreaView className="flex-1">
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  presentation: "transparentModal",
+                }}
+              >
+                <Stack.Screen name="(AppScreens)" />
+                <Stack.Screen name="(authScreens)" />
+                <Stack.Screen name="onboarding" />
+              </Stack>
+            </SafeAreaView>
+          </QueryClientProvider>
         </GestureHandlerRootView>
         <NetworkMonitor />
         <Toast position="bottom" bottomOffset={30} />
