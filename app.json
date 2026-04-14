@@ -19,7 +19,12 @@
         "dark": "./assets/icons/ios-icon.png",
         "tinted": "./assets/icons/ios-icon.png"
       },
-      "bundleIdentifier": "com.anonymous.housely"
+      "bundleIdentifier": "com.anonymous.housely",
+      "infoPlist": {
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        }
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -34,7 +39,8 @@
         "ACCESS_FINE_LOCATION",
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION"
-      ]
+      ],
+      "usesCleartextTraffic": true
     },
     "web": {
       "output": "static",
