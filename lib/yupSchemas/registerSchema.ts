@@ -10,6 +10,11 @@ export const registerSchema = yup.object().shape({
     .min(3, "Username must be at least 3 characters")
     .max(20, "Username must be at most 20 characters")
     .required("Username is required"),
+  phone: yup
+    .string()
+    .matches(/^[0-9]+$/, "Phone number must be digits only")
+    .min(10, "Phone number must be at least 10 digits")
+    .required("Phone number is required"),
   password: yup
     .string()
     .min(6, "Password must be at least 6 characters")
