@@ -8,6 +8,10 @@ import CustomButton from "@/components/CustomButton";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+// country picker
+import CountryPickerModal, {
+  CountryItem,
+} from "@/components/CountryPickerModal";
 // expo imports
 import { Link, useRouter } from "expo-router";
 // react native imports
@@ -40,23 +44,36 @@ const Register = () => {
     resolver: yupResolver(registerSchema),
     defaultValues: {
       email: "",
-      username: "",
+      phone: "",
       password: "",
       agreeToTerms: false,
     },
   });
   const [focusedEmail, setFocusedEmail] = useState(false);
   const [focusedPassword, setFocusedPassword] = useState(false);
-  const [focusedUsername, setFocusedUsername] = useState(false);
+  const [focusedPhone, setFocusedPhone] = useState(false);
+
+  // Country Picker State
+  const [pickerVisible, setPickerVisible] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState<CountryItem>({
+    name: "Egypt",
+    flag: "🇪🇬",
+    dial_code: "20",
+    code: "EG",
+  });
+
   const router = useRouter();
 
   // -----------------------
 
   const handleRegister = async (data: registerInput) => {
     try {
-      console.log(data);
-      // await register(data);
-      // router.replace("/");
+      // Concatenate calling code with phone number
+      const formattedData = {
+        ...data,
+        phone: `+${selectedCountry.dial_code}${data.phone}`,
+      };
+      console.log(formattedData);
     } catch (error) {
       console.error(error);
     }
@@ -117,40 +134,56 @@ const Register = () => {
             )}
           </View>
 
-          {/* Username Field */}
+          {/* Phone Field */}
           <View className="flex gap-2 mb-5">
             <Label
-              nativeID="username"
-              htmlFor="username"
+              nativeID="phone"
+              htmlFor="phone"
               className="text-lg font-bold"
             >
-              Username
+              Phone Number
             </Label>
-            <Controller
-              name="username"
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  id="username"
-                  placeholder="Username"
-                  value={value}
-                  onChangeText={onChange}
-                  onFocus={() => setFocusedUsername(true)}
-                  onBlur={() => {
-                    setFocusedUsername(false);
-                    onBlur();
-                  }}
-                  keyboardType="default"
-                  textContentType="username"
-                  autoComplete="username"
-                  autoCapitalize="none"
-                  className={`${focusedUsername ? "border-primary-600 border-[1.5px]" : errors.username ? "border-red-500 border-[1.5px]" : "border-zinc-300"} ${styles.textInput} placeholder:text-zinc-400`}
+            <View className="flex-row items-center gap-2">
+              {/* Country Picker Trigger */}
+              <TouchableOpacity
+                onPress={() => setPickerVisible(true)}
+                className={`flex-row items-center justify-center h-16 px-4 rounded-2xl bg-white border-[1.5px] ${focusedPhone ? "border-primary-600" : errors.phone ? "border-red-500" : "border-zinc-300"}`}
+              >
+                <Text className="text-2xl">{selectedCountry.flag}</Text>
+                <Text className="text-zinc-600 text-lg ml-2">
+                  +{selectedCountry.dial_code}
+                </Text>
+                <Feather
+                  name="chevron-down"
+                  size={16}
+                  color="#D1D5DB"
+                  style={{ marginLeft: 4 }}
                 />
-              )}
-            />
-            {errors.username && (
+              </TouchableOpacity>
+
+              {/* Phone Input */}
+              <Controller
+                name="phone"
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <Input
+                    placeholder="Enter your phone number"
+                    value={value}
+                    onChangeText={onChange}
+                    onFocus={() => setFocusedPhone(true)}
+                    onBlur={() => {
+                      setFocusedPhone(false);
+                      onBlur();
+                    }}
+                    keyboardType="phone-pad"
+                    className={`flex-1 ${focusedPhone ? "border-primary-600 border-[1.5px]" : errors.phone ? "border-red-500 border-[1.5px]" : "border-zinc-300"} ${styles.textInput}`}
+                  />
+                )}
+              />
+            </View>
+            {errors.phone && (
               <Text className="text-red-500 text-sm ml-1">
-                {errors.username.message}
+                {errors.phone.message}
               </Text>
             )}
           </View>
@@ -249,6 +282,16 @@ const Register = () => {
           </Text>
         </View>
       </ScrollView>
+
+      {/* Country Picker Modal */}
+      <CountryPickerModal
+        visible={pickerVisible}
+        onClose={() => setPickerVisible(false)}
+        onSelect={(country) => {
+          setSelectedCountry(country);
+          setPickerVisible(false);
+        }}
+      />
     </ScreenWrapper>
   );
 };
