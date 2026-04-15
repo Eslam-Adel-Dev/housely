@@ -17,29 +17,16 @@ import profilePic from "@/assets/images/profilePic.jpg";
 // types imports
 import { ProfileProps } from "@/types/type";
 // context imports
-import { useUserContext } from "@/context/userContext";
 // hooks imports
+import { useLogout } from "@/api/hooks/useAuth";
 import { useMediaPicker } from "@/hooks/useMediaPicker";
 // toast imports
-import Toast from "react-native-toast-message";
 
 //=========================================================
 
 const Profile = ({ optionName, Icon }: ProfileProps) => {
-  const router = useRouter();
-  const { logout } = useUserContext();
   const { media, handleMediaPicker } = useMediaPicker();
-  const handleLogout = () => {
-    logout();
-    router.push("/(authScreens)/login");
-    setTimeout(() => {
-      Toast.show({
-        type: "info",
-        text1: "Signed out 👋",
-        text2: "You have been successfully signed out.",
-      });
-    }, 300);
-  };
+  const useLogoutHook = () => useLogout();
 
   return (
     <ScreenWrapper>
@@ -79,7 +66,7 @@ const Profile = ({ optionName, Icon }: ProfileProps) => {
           contentContainerStyle={{ paddingVertical: 25 }}
         />
         {/* --------------------------------------- */}
-        <TouchableOpacity onPress={handleLogout}>
+        <TouchableOpacity onPress={useLogoutHook}>
           <Text className="text-red-500 text-center text-xl">Sign Out</Text>
         </TouchableOpacity>
       </ScrollView>

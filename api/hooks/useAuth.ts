@@ -5,6 +5,21 @@ import Toast from "react-native-toast-message";
 import { usePostHook } from "./useMethods";
 
 //================================================================
+// LOGOUT hook
+
+export const useLogout = () => {
+  storage.remove("userCredentials");
+  router.push("/(authScreens)/login");
+  setTimeout(() => {
+    Toast.show({
+      type: "info",
+      text1: "Signed out 👋",
+      text2: "You have been successfully signed out.",
+    });
+  }, 300);
+};
+
+//================================================================
 // LOGIN hook
 
 export const useLogin = () => {
