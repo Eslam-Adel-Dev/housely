@@ -24,6 +24,7 @@ import { verifyAccountInput } from "@/types/type";
 // react-hook-form imports
 import { Controller, useForm } from "react-hook-form";
 // hooks imports
+import { useResendCode, useVerifyAccount } from "@/api/hooks/useAuth";
 import { useResendTimer } from "@/hooks/useResendTimer";
 // yup schemas
 
@@ -33,7 +34,8 @@ const VerifyAccount = () => {
   const { timer, canResend, resetTimer } = useResendTimer(60);
   const { height } = useWindowDimensions();
   const router = useRouter();
-
+  const { mutateResend, isPending: isResending } = useResendCode();
+  const { mutateVerify, isPending: isVerifying } = useVerifyAccount();
   const { email, mode } = useLocalSearchParams<{
     email: string;
     mode: "register" | "reset";
@@ -49,8 +51,10 @@ const VerifyAccount = () => {
 
   const handleVerify = async (data: verifyAccountInput) => {
     try {
-      console.log(data);
-      router.replace("/(authScreens)/reset-password");
+      mutateVerify({
+        email: email!,
+        code: data.otp,
+      });
     } catch (error) {
       console.error(error);
     }
@@ -59,7 +63,15 @@ const VerifyAccount = () => {
   const handleResend = () => {
     if (!canResend) return;
 
-    resetTimer();
+    mutateResend(
+      {
+        identifier: email!,
+        mode: mode === "register" ? "register" : "reset",
+      },
+      () => {
+        resetTimer();
+      },
+    );
   };
 
   // -----------------------
@@ -125,7 +137,11 @@ const VerifyAccount = () => {
                     canResend ? "text-primary-600" : "text-zinc-400"
                   }`}
                 >
-                  {canResend ? "Resend Code" : `Resend in ${timer}s`}
+                  {isResending
+                    ? "Sending..."
+                    : canResend
+                      ? "Resend Code"
+                      : `Resend in ${timer}s`}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -136,6 +152,8 @@ const VerifyAccount = () => {
               onButtonPress={handleSubmit(handleVerify)}
               textClassName="text-white"
               className="rounded-lg"
+              loading={isVerifying}
+              disabled={isVerifying}
             >
               Verify
             </CustomButton>
