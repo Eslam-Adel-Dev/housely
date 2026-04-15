@@ -1,12 +1,15 @@
 // expo imports
-// import { userStore } from "@/stores/userStore";
-import { useUserContext } from "@/context/userContext";
 import { Redirect, Stack } from "expo-router";
+// hooks imports
+import { useUserCredintials } from "@/hooks/useMmkvStorage/useUserCredentials";
+
+//========================================================
 
 const AppLayout = () => {
-  const { isLogged } = useUserContext();
+  const userCredintials = useUserCredintials();
 
-  if (!isLogged) return <Redirect href="/(authScreens)/login" />;
+  if (!userCredintials && !userCredintials?.token)
+    return <Redirect href="/(authScreens)/login" />;
 
   return (
     <Stack
