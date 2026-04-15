@@ -2,7 +2,7 @@
 import ScreenWrapper from "@/components/ScreenWrapper";
 
 // expo imports
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 // react native imports
 import CustomButton from "@/components/CustomButton";
 import { Image, Text, View } from "react-native";
@@ -14,6 +14,9 @@ import shield from "@/assets/icons/Shield.png";
 
 const SuccessScreen = () => {
   const router = useRouter();
+  const { mode } = useLocalSearchParams<{
+    mode: "register" | "reset";
+  }>();
 
   return (
     <ScreenWrapper className="p-4 flex-col">
@@ -24,13 +27,14 @@ const SuccessScreen = () => {
         <View className="items-center justify-center gap-4">
           <Text className="text-2xl font-bold">Success!</Text>
           <Text className="text-zinc-400 text-center">
-            You password has been changed. Please log in again with a new
-            password.
+            {mode === "register"
+              ? "Your account has been created successfully. Please log in to continue."
+              : "Your password has been changed successfully. Please log in again with a new password."}
           </Text>
         </View>
       </View>
       <CustomButton
-        onButtonPress={() => router.push("/login")}
+        onButtonPress={() => router.push("/(authScreens)/login")}
         textClassName="text-white"
         className="rounded-lg "
       >
