@@ -271,7 +271,8 @@ export type loginInput = {
 
 export type registerInput = {
   email: string;
-  username: string;
+  name: string;
+  phone: string;
   password: string;
   agreeToTerms: boolean;
 };
