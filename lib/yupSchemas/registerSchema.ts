@@ -5,11 +5,11 @@ export const registerSchema = yup.object().shape({
     .string()
     .email("Please enter a valid email address")
     .required("Email is required"),
-  username: yup
+  name: yup
     .string()
-    .min(3, "Username must be at least 3 characters")
-    .max(20, "Username must be at most 20 characters")
-    .required("Username is required"),
+    .min(3, "Name must be at least 3 characters")
+    .max(100, "Name must be at most 100 characters")
+    .required("Name is required"),
   phone: yup
     .string()
     .matches(/^[0-9]+$/, "Phone number must be digits only")
