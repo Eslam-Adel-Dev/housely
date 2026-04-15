@@ -1,13 +1,17 @@
-import { useUserContext } from "@/context/userContext";
-import { useOnboardingStatus } from "@/hooks/useOnboardingStatus";
+// expo export
 import { Redirect, Stack } from "expo-router";
+// hooks imports
+import { useOnboardingStatus } from "@/hooks/useMmkvStorage/useOnboardingStatus";
+import { useUserCredintials } from "@/hooks/useMmkvStorage/useUserCredentials";
+
+//=================================================
 
 const AuthLayout = () => {
-  const { isLogged } = useUserContext();
   const isOnboardingCompleted = useOnboardingStatus();
+  const userCredintials = useUserCredintials();
 
   if (!isOnboardingCompleted) return <Redirect href="/onboarding" />;
-  if (isLogged) return <Redirect href="/" />;
+  if (userCredintials) return <Redirect href="/" />;
 
   return (
     <Stack
