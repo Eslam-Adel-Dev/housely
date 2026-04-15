@@ -26,6 +26,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 // yup schemas
 import { registerSchema } from "@/lib/yupSchemas/registerSchema";
+// hooks imports
+import { useRegister } from "@/api/hooks/useAuth";
 
 //=========================================================
 
@@ -66,6 +68,8 @@ const Register = () => {
 
   const router = useRouter();
 
+  // hooks
+  const { mutateRegister, isPending } = useRegister();
   // -----------------------
 
   const handleRegister = async (data: registerInput) => {
@@ -75,7 +79,7 @@ const Register = () => {
         ...data,
         phone: `+${selectedCountry.dial_code}${data.phone}`,
       };
-      console.log(formattedData);
+      mutateRegister(formattedData);
     } catch (error) {
       console.error(error);
     }
@@ -287,6 +291,8 @@ const Register = () => {
           onButtonPress={handleSubmit(handleRegister) as () => void}
           textClassName="text-white"
           className="rounded-lg"
+          disabled={isPending}
+          loading={isPending}
         >
           Sign Up
         </CustomButton>
