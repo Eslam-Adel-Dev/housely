@@ -43,6 +43,7 @@ const Register = () => {
   } = useForm<registerInput>({
     resolver: yupResolver(registerSchema),
     defaultValues: {
+      name: "",
       email: "",
       phone: "",
       password: "",
@@ -52,6 +53,7 @@ const Register = () => {
   const [focusedEmail, setFocusedEmail] = useState(false);
   const [focusedPassword, setFocusedPassword] = useState(false);
   const [focusedPhone, setFocusedPhone] = useState(false);
+  const [focusedName, setFocusedName] = useState(false);
 
   // Country Picker State
   const [pickerVisible, setPickerVisible] = useState(false);
@@ -96,6 +98,39 @@ const Register = () => {
         </View>
         {/* ---------------------------------- */}
         <View className="mb-10">
+          {/* Name Field */}
+          <View className="flex gap-2 mb-5">
+            <Label nativeID="name" htmlFor="name" className="text-lg font-bold">
+              Name
+            </Label>
+            <Controller
+              name="name"
+              control={control}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  id="name"
+                  placeholder="Name"
+                  value={value}
+                  onChangeText={onChange}
+                  onFocus={() => setFocusedName(true)}
+                  onBlur={() => {
+                    setFocusedName(false);
+                    onBlur();
+                  }}
+                  keyboardType="default"
+                  textContentType="name"
+                  autoComplete="name"
+                  autoCapitalize="none"
+                  className={`${focusedName ? "border-primary-600 border-[1.5px]" : errors.name ? "border-red-500 border-[1.5px]" : "border-zinc-300"} ${styles.textInput} placeholder:text-zinc-400`}
+                />
+              )}
+            />
+            {errors.name && (
+              <Text className="text-red-500 text-sm ml-1">
+                {errors.name.message}
+              </Text>
+            )}
+          </View>
           {/* Email Field */}
           <View className="flex gap-2 mb-5">
             <Label
