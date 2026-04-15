@@ -9,49 +9,57 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-// react imports
+
 // expo icons imports
 import Feather from "@expo/vector-icons/Feather";
 // components imports
 import CustomButton from "@/components/CustomButton";
 import ScreenWrapper from "@/components/ScreenWrapper";
 // expo imports
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 // react otp import
 import { OtpInput } from "react-native-otp-entry";
 // types imports
 import { verifyAccountInput } from "@/types/type";
 // react-hook-form imports
-import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
+// hooks imports
+import { useResendTimer } from "@/hooks/useResendTimer";
 // yup schemas
-import { verifyAccountSchema } from "@/lib/yupSchemas/verifyAccountSchema";
 
 //=========================================================
 
 const VerifyAccount = () => {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<verifyAccountInput>({
-    resolver: yupResolver(verifyAccountSchema),
+  const { timer, canResend, resetTimer } = useResendTimer(60);
+  const { height } = useWindowDimensions();
+  const router = useRouter();
+
+  const { email, mode } = useLocalSearchParams<{
+    email: string;
+    mode: "register" | "reset";
+  }>();
+
+  const { control, handleSubmit, setValue } = useForm({
     defaultValues: {
       otp: "",
     },
   });
-  const { height } = useWindowDimensions();
-  const router = useRouter();
 
   // -----------------------
 
-  const handleVerifyAccount = async (data: verifyAccountInput) => {
+  const handleVerify = async (data: verifyAccountInput) => {
     try {
       console.log(data);
       router.replace("/(authScreens)/reset-password");
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleResend = () => {
+    if (!canResend) return;
+
+    resetTimer();
   };
 
   // -----------------------
@@ -74,58 +82,64 @@ const VerifyAccount = () => {
           <TouchableOpacity onPress={() => router.back()}>
             <Feather name="arrow-left" size={24} color="gray" />
           </TouchableOpacity>
-          {/* ---------------------------------- */}
+
           <View className="flex gap-2 mb-10 mt-5">
-            <Text className="text-[1.7rem] font-bold">Verify your Email</Text>
+            <Text className="text-[1.7rem] font-bold">
+              {mode === "register" ? "Verify Account" : "Reset Code"}
+            </Text>
             <Text className="text-zinc-400 text-lg w-[85%] leading-[20px]">
-              Please enter 6 digit verification that have been sent to your
-              email address
+              Please enter the 6-digit code sent to{" "}
+              <Text className="text-primary-600 font-semibold">{email}</Text>
             </Text>
           </View>
 
-          {/* otp input */}
-
+          {/* OTP Section */}
           <View style={styles.otpSection}>
             <Controller
               name="otp"
               control={control}
-              render={({ field: { onChange } }) => (
+              render={({ field: { onChange, value } }) => (
                 <OtpInput
-                  numberOfDigits={5}
+                  numberOfDigits={6}
                   focusColor="#7F56D9"
                   placeholder="******"
                   blurOnFilled={true}
-                  onTextChange={(text) => onChange(text)}
-                  onFilled={(text) => handleVerifyAccount({ otp: text })}
+                  onTextChange={onChange}
+                  onFilled={(text) => handleVerify({ otp: text })}
                   theme={{
                     pinCodeContainerStyle: styles.pinCodeContainerStyle,
+                    pinCodeTextStyle: styles.pinCodeTextStyle,
                   }}
                 />
               )}
             />
 
-            {/* resend code */}
-            <View className="items-center justify-center gap-1">
-              <Text className="text-zinc-400 text-lg w-[85%] leading-[20px] text-center">
-                Didn&apos;t receive a code?{" "}
+            {/* Resend code */}
+            <View className="items-center justify-center gap-2 mt-4">
+              <Text className="text-zinc-400 text-lg text-center">
+                Didn&apos;t receive a code?
               </Text>
-              <Text className="text-[#F97066]">Resend Code</Text>
-
-              {/* Error message */}
-              {errors.otp && (
-                <Text className="text-red-500">{errors.otp.message}</Text>
-              )}
+              <TouchableOpacity onPress={handleResend} disabled={!canResend}>
+                <Text
+                  className={`text-lg font-bold ${
+                    canResend ? "text-primary-600" : "text-zinc-400"
+                  }`}
+                >
+                  {canResend ? "Resend Code" : `Resend in ${timer}s`}
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
-          {/* ---------------------------------- */}
 
-          <CustomButton
-            onButtonPress={handleSubmit(handleVerifyAccount)}
-            textClassName="text-white"
-            className="rounded-lg"
-          >
-            Verify
-          </CustomButton>
+          <View className="mt-auto">
+            <CustomButton
+              onButtonPress={handleSubmit(handleVerify)}
+              textClassName="text-white"
+              className="rounded-lg"
+            >
+              Verify
+            </CustomButton>
+          </View>
         </ScrollView>
       </KeyboardAvoidingView>
     </ScreenWrapper>
@@ -140,19 +154,26 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: "space-between",
     paddingBottom: 16,
   },
   otpSection: {
     flex: 1,
-    gap: 24,
+    gap: 32,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 20,
-    backgroundColor: "white",
+    paddingVertical: 40,
   },
   pinCodeContainerStyle: {
-    padding: 5,
-    boxSizing: "content-box",
+    width: 50,
+    height: 60,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: "#E5E7EB",
+    backgroundColor: "white",
+  },
+  pinCodeTextStyle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#1F2937",
   },
 });
