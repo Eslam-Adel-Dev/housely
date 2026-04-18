@@ -1,35 +1,50 @@
 // react native imports
 import { useState } from "react";
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  RefreshControl,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 // icons imports
 import chat from "@/assets/icons/Chat.png";
 import location from "@/assets/icons/Location.png";
 import notification from "@/assets/icons/Notification.png";
 // components imports
-import Filter from "@/components/Filters";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import SearchComp from "@/components/SearchComp";
+import PropertyCard2Error from "@/components/error/PropertyCard2Error";
+import PropertyCardError from "@/components/error/PropertyCardError";
 import AdSection from "@/components/homeScreen/AdSection";
 import PropertyCard from "@/components/homeScreen/PropertyCard";
 import PropertyCard2 from "@/components/homeScreen/PropertyCard2";
 import LocationFullDetails from "@/components/layout/LocationFullDetails";
+import PropertyCard2Skeleton from "@/components/skeletons/PropertyCard2Skeleton";
+import PropertyCardSkeleton from "@/components/skeletons/PropertyCardSkeleton";
 // images imports
 import building from "@/assets/images/building.png";
 // dummy data imports
-import { filtersData, properties } from "@/data/data";
 // context imports
 import { useUserContext } from "@/context/userContext";
 //hooks imports
+import {
+  useNearbyProperties,
+  usePopularProperties,
+  useRecommendedProperties,
+} from "@/api/hooks/useProperties";
 import useLocationName from "@/hooks/useLocationName";
 // expo imports
 import { useRouter } from "expo-router";
 // flashlist imports
+import { Property } from "@/types/type";
 import { FlashList } from "@shopify/flash-list";
 
 //===================================================================
 
 const Index = () => {
-  const [selectedFilter, setSelectedFilter] = useState(1);
+  // const [selectedFilter, setSelectedFilter] = useState(1);
   const [showFullLocation, setShowFullLocation] = useState(false);
   const { userLocation } = useUserContext();
   const locationName = useLocationName(
@@ -37,12 +52,48 @@ const Index = () => {
     userLocation?.longitude,
   );
   const router = useRouter();
+  const {
+    nearbyProperties,
+    isNearbyPropertiesPending,
+    isNearbyPropertiesError,
+    refetchNearbyProperties,
+  } = useNearbyProperties(31.22, 30.05, 0, 10);
+  const {
+    recommendedProperties,
+    isRecommendedPropertiesPending,
+    isRecommendedPropertiesError,
+    refetchRecommendedProperties,
+  } = useRecommendedProperties();
+  const {
+    popularProperties,
+    isPopularPropertiesPending,
+    isPopularPropertiesError,
+    refetchPopularProperties,
+  } = usePopularProperties();
 
+  const nearbyDataRowOne = nearbyProperties?.slice(0, 5);
+  const nearbyDataRowTwo = nearbyProperties?.slice(5, 10);
+
+  // refrech control
+  const isRefetching =
+    isNearbyPropertiesPending ||
+    isRecommendedPropertiesPending ||
+    isPopularPropertiesPending;
+
+  const onRefresh = () => {
+    refetchNearbyProperties();
+    refetchRecommendedProperties();
+    refetchPopularProperties();
+  };
   //-----------------------------------------------------
 
   // ui part
   return (
-    <ScrollView>
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={isRefetching} onRefresh={onRefresh} />
+      }
+    >
       <ScreenWrapper className="bg-[#fcfcfd] gap-8">
         {/* ---------------------------------- */}
 
@@ -87,45 +138,41 @@ const Index = () => {
           image={building}
         />
         {/* ---------------------------------- */}
+
+        {/* Recommended Properties */}
+
         <View className="flex-row items-center justify-between">
           <Text className="text-xl font-bold">Recommended</Text>
           <Text className="text-primary-400 text-md font-semibold">
             See All
           </Text>
         </View>
-        <FlashList
-          data={properties}
-          renderItem={({ item }) => (
-            <PropertyCard {...item} image={item.images[0]} />
-          )}
-          horizontal={true}
-          keyExtractor={(item) => item.id.toString()}
-          ItemSeparatorComponent={() => <View className="w-4" />}
-          showsHorizontalScrollIndicator={false}
-        />
+        {isRecommendedPropertiesPending ? (
+          <FlashList
+            data={[1, 2, 3]}
+            renderItem={() => <PropertyCardSkeleton />}
+            horizontal={true}
+            keyExtractor={(item) => item.toString()}
+            ItemSeparatorComponent={() => <View className="w-4" />}
+            showsHorizontalScrollIndicator={false}
+          />
+        ) : isRecommendedPropertiesError ? (
+          <PropertyCardError onRetry={refetchRecommendedProperties} />
+        ) : (
+          <FlashList
+            data={recommendedProperties}
+            renderItem={({ item }: { item: Property }) => (
+              <PropertyCard {...item} image={item.images?.[0]} />
+            )}
+            horizontal={true}
+            keyExtractor={(item) => item._id.toString()}
+            ItemSeparatorComponent={() => <View className="w-4" />}
+            showsHorizontalScrollIndicator={false}
+          />
+        )}
         {/* ---------------------------------- */}
 
-        <View className="flex-row items-center justify-between">
-          <Text className="text-xl font-bold">Top Locations</Text>
-          <Text className="text-primary-400 text-md font-semibold">
-            See All
-          </Text>
-        </View>
-        <FlashList
-          data={filtersData}
-          renderItem={({ item }) => (
-            <Filter
-              {...item}
-              setSelectedFilter={setSelectedFilter}
-              selectedFilter={selectedFilter}
-            />
-          )}
-          horizontal={true}
-          keyExtractor={(item) => item.id.toString()}
-          ItemSeparatorComponent={() => <View className="w-4" />}
-          showsHorizontalScrollIndicator={false}
-        />
-        {/* ---------------------------------- */}
+        {/* Popular Properties*/}
 
         <View className="flex-row items-center justify-between">
           <Text className="text-xl font-bold">Popular Properties</Text>
@@ -133,17 +180,32 @@ const Index = () => {
             See All
           </Text>
         </View>
-        <FlashList
-          data={properties}
-          renderItem={({ item }) => (
-            <PropertyCard {...item} image={item.images[0]} />
-          )}
-          horizontal={true}
-          keyExtractor={(item) => item.id.toString()}
-          ItemSeparatorComponent={() => <View className="w-4" />}
-          showsHorizontalScrollIndicator={false}
-        />
+        {isPopularPropertiesPending ? (
+          <FlashList
+            data={[1, 2, 3]}
+            renderItem={() => <PropertyCardSkeleton />}
+            horizontal={true}
+            keyExtractor={(item) => item.toString()}
+            ItemSeparatorComponent={() => <View className="w-4" />}
+            showsHorizontalScrollIndicator={false}
+          />
+        ) : isPopularPropertiesError ? (
+          <PropertyCardError onRetry={refetchPopularProperties} />
+        ) : (
+          <FlashList
+            data={popularProperties}
+            renderItem={({ item }: { item: Property }) => (
+              <PropertyCard {...item} image={item.images?.[0]} />
+            )}
+            horizontal={true}
+            keyExtractor={(item) => item._id.toString()}
+            ItemSeparatorComponent={() => <View className="w-4" />}
+            showsHorizontalScrollIndicator={false}
+          />
+        )}
         {/* ---------------------------------- */}
+
+        {/* Nearby Properties */}
 
         <View className="flex-row items-center justify-between">
           <Text className="text-xl font-bold">Nearby</Text>
@@ -151,28 +213,64 @@ const Index = () => {
             See All
           </Text>
         </View>
-        <FlashList
-          data={properties}
-          renderItem={({ item }) => (
-            <PropertyCard2 {...item} image={item.images[0]} />
-          )}
-          horizontal={true}
-          keyExtractor={(item) => item.id.toString()}
-          ItemSeparatorComponent={() => <View className="w-4" />}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingRight: 20 }}
-        />
+        {isNearbyPropertiesPending ? (
+          <FlashList
+            data={[1, 2, 3]}
+            renderItem={() => <PropertyCard2Skeleton fullWidth={false} />}
+            horizontal={true}
+            keyExtractor={(item) => item.toString()}
+            ItemSeparatorComponent={() => <View className="w-4" />}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingRight: 20 }}
+          />
+        ) : isNearbyPropertiesError ? (
+          <View className="w-full pr-5">
+            <PropertyCard2Error fullWidth onRetry={refetchNearbyProperties} />
+          </View>
+        ) : (
+          <FlashList
+            data={nearbyDataRowOne}
+            renderItem={({ item }: { item: Property }) => (
+              <PropertyCard2 {...item} fullWidth={false} />
+            )}
+            horizontal={true}
+            keyExtractor={(item) => item._id.toString()}
+            ItemSeparatorComponent={() => <View className="w-4" />}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingRight: 20 }}
+          />
+        )}
         {/* ---------------------------------- */}
 
-        <FlashList
-          data={properties}
-          renderItem={({ item }) => <PropertyCard2 {...item} />}
-          horizontal={true}
-          keyExtractor={(item) => item.id.toString()}
-          ItemSeparatorComponent={() => <View className="w-4" />}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingRight: 20 }}
-        />
+        {/* Popular Properties - second row */}
+
+        {isNearbyPropertiesPending ? (
+          <FlashList
+            data={[1, 2, 3]}
+            renderItem={() => <PropertyCard2Skeleton fullWidth={false} />}
+            horizontal={true}
+            keyExtractor={(item) => item.toString()}
+            ItemSeparatorComponent={() => <View className="w-4" />}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingRight: 20 }}
+          />
+        ) : isNearbyPropertiesError ? (
+          <View className="w-full pr-5">
+            <PropertyCard2Error fullWidth onRetry={refetchNearbyProperties} />
+          </View>
+        ) : (
+          <FlashList
+            data={nearbyDataRowTwo}
+            renderItem={({ item }: { item: Property }) => (
+              <PropertyCard2 {...item} fullWidth={false} />
+            )}
+            horizontal={true}
+            keyExtractor={(item) => item._id.toString()}
+            ItemSeparatorComponent={() => <View className="w-4" />}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingRight: 20 }}
+          />
+        )}
       </ScreenWrapper>
 
       <LocationFullDetails
