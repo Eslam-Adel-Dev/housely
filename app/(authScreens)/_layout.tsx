@@ -8,10 +8,10 @@ import { useUserCredintials } from "@/hooks/useMmkvStorage/useUserCredentials";
 
 const AuthLayout = () => {
   const isOnboardingCompleted = useOnboardingStatus();
-  const userCredintials = useUserCredintials();
+  const token = useUserCredintials();
 
   if (!isOnboardingCompleted) return <Redirect href="/onboarding" />;
-  if (userCredintials) return <Redirect href="/" />;
+  if (token) return <Redirect href="/" />;
 
   return (
     <Stack
