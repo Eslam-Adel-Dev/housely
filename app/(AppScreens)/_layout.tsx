@@ -6,10 +6,9 @@ import { useUserCredintials } from "@/hooks/useMmkvStorage/useUserCredentials";
 //========================================================
 
 const AppLayout = () => {
-  const userCredintials = useUserCredintials();
+  const token = useUserCredintials();
 
-  if (!userCredintials && !userCredintials?.token)
-    return <Redirect href="/(authScreens)/login" />;
+  if (!token) return <Redirect href="/(authScreens)/login" />;
 
   return (
     <Stack

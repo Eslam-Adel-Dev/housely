@@ -8,7 +8,7 @@ import { usePostHook } from "./useMethods";
 // LOGOUT hook
 
 export const useLogout = () => {
-  storage.remove("userCredentials");
+  storage.remove("token");
   router.push("/(authScreens)/login");
   setTimeout(() => {
     Toast.show({
@@ -35,8 +35,8 @@ export const useLogin = () => {
       },
       {
         onSuccess: (data) => {
-          const dataString = JSON.stringify(data);
-          storage.set("userCredentials", dataString);
+          const token = data.token;
+          storage.set("token", token);
           router.push("/(AppScreens)/(tabs)");
           Toast.show({
             text1: "WELCOME BACK",

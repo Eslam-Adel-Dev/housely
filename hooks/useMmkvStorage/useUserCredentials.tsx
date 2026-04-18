@@ -4,18 +4,17 @@ import { useEffect, useState } from "react";
 // =================================================================
 
 export const useUserCredintials = () => {
-  const [userCredentials, setUserCredentials] = useState<any>(null);
+  const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
-    let value = storage.getString("userCredentials");
+    let value = storage.getString("token");
     if (value) {
-      value = JSON.parse(value);
-      setUserCredentials(value);
+      setToken(value);
       return;
     }
 
-    setUserCredentials(null);
+    setToken(null);
   }, []);
 
-  return userCredentials;
+  return token;
 };
