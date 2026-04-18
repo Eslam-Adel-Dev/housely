@@ -10,4 +10,9 @@ export const ENDPOINTS = {
     RESET_PASSWORD: "/auth/reset-password",
     CHANGE_PASSWORD: "/auth/change-password",
   },
+  PROPERTIES: {
+    RECOMMENDED: "/properties/recommended",
+    POPULAR: "/properties/popular",
+    NEARBY: "/properties/nearby",
+  },
 };

@@ -180,12 +180,13 @@ export interface CreditCardProps {
 }
 
 export interface Property {
-  id: string;
+  _id: string;
   name: string;
   image?: string;
-  images: string[];
+  images?: string[];
   rentPerMonth: number;
   currency: string;
+  address: string;
   location: string;
   coords: Coordinates;
 
@@ -196,7 +197,8 @@ export interface Property {
   yearBuilt: number;
   parking: string;
   status: string;
-
+  averageRating: number;
+  ratingCount: number;
   description: string;
 
   agent: Agent;

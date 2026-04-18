@@ -7,4 +7,9 @@ export const QUERY_KEYS = {
     RESET_PASSWORD: "reset-password",
     CHANGE_PASSWORD: "change-password",
   },
+  PROPERTIES: {
+    RECOMMENDED: "recommended",
+    POPULAR: "popular",
+    NEARBY: "nearby",
+  },
 };

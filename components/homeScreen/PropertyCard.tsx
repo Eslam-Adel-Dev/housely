@@ -13,7 +13,7 @@ import { Property } from "@/types/type";
 import useFavoriteProperties from "@/hooks/useFavoriteProperties";
 
 const PropertyCard = (props: Property) => {
-  const { id, name, location, rentPerMonth, image } = props;
+  const { _id, name, address, rentPerMonth, image } = props;
   const { isLiked: isPropertyLiked, toggleLike } = useFavoriteProperties(props);
   const router = useRouter();
 
@@ -26,7 +26,7 @@ const PropertyCard = (props: Property) => {
   return (
     <TouchableOpacity
       className="h-[180px] w-[270px] rounded-3xl overflow-hidden"
-      onPress={() => router.push(`/property/${id}`)}
+      onPress={() => router.push(`/property/${_id}`)}
     >
       {typeof image === "string" ? (
         <Image
@@ -49,7 +49,7 @@ const PropertyCard = (props: Property) => {
         <Text className="text-white font-bold">{name}</Text>
         <View className="flex-row gap-2 items-center">
           <Location className="w-4 h-4" />
-          <Text className="text-zinc-300">{location}</Text>
+          <Text className="text-zinc-300">{address}</Text>
         </View>
       </View>
       {/* --------------------------------- */}
