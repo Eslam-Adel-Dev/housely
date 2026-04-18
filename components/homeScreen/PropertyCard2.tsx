@@ -14,17 +14,15 @@ import useScreenDimensions from "@/hooks/useScreenDimensions";
 // expo router
 import { useRouter } from "expo-router";
 // utils
-import { avgPropertyRatingFunction } from "@/lib/utils";
 
 //=============================================
 
 const PropertyCard2 = (props: Property & fullWidthType) => {
   //--------------------------------
-  const { id, name, location, rentPerMonth, images, reviews, fullWidth } =
+  const { _id, name, address, rentPerMonth, images, averageRating, fullWidth } =
     props;
   const { isLiked: isPropertyLiked, toggleLike } = useFavoriteProperties(props);
   const { screenWidth } = useScreenDimensions();
-  const avgRating = avgPropertyRatingFunction(reviews);
   const image = images && images[0];
   const router = useRouter();
   //--------------------------------
@@ -33,7 +31,7 @@ const PropertyCard2 = (props: Property & fullWidthType) => {
     <TouchableOpacity
       className="flex-row h-[90px] gap-4 border-b border-zinc-200 px-2 pb-4"
       style={{ width: fullWidth ? screenWidth - 40 : screenWidth - 70 }}
-      onPress={() => router.push(`/property/${id}`)}
+      onPress={() => router.push(`/property/${_id}`)}
     >
       {typeof image === "string" ? (
         <Image
@@ -64,7 +62,7 @@ const PropertyCard2 = (props: Property & fullWidthType) => {
         <View className="flex-row items-center gap-1">
           <Location className="w-8 h-8" />
           <Text className="text-zinc-500/90 text-sm" numberOfLines={1}>
-            {location}
+            {address}
           </Text>
         </View>
         {/* ------------------------ */}
@@ -73,7 +71,7 @@ const PropertyCard2 = (props: Property & fullWidthType) => {
           <Text>
             <Text className="font-bold text-lg">${rentPerMonth}</Text>/month
           </Text>
-          <RateStars rate={avgRating} />
+          <RateStars rate={averageRating} />
         </View>
       </View>
     </TouchableOpacity>
