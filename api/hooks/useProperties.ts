@@ -73,7 +73,6 @@ export const useNearbyProperties = (
       QUERY_KEYS.PROPERTIES.NEARBY,
     ]);
   const nearbyProperties = data?.data;
-  console.log("NEARBY DATA", nearbyProperties);
 
   if (isError) {
     Toast.show({
@@ -89,5 +88,34 @@ export const useNearbyProperties = (
     isNearbyPropertiesPending: isPending,
     isNearbyPropertiesSuccess: isSuccess,
     isNearbyPropertiesError: isError,
+  };
+};
+
+//================================================================
+// PROPERTY DETAILS HOOK
+
+export const usePropertyDetails = (id: string) => {
+  const { data, isPending, isSuccess, isError, refetch, isFetched } =
+    useGetHook(`${ENDPOINTS.PROPERTIES.PROPERTY}/${id}`, [
+      QUERY_KEYS.PROPERTIES.PROPERTY,
+      id,
+    ]);
+  const propertyDetails = data?.data;
+  console.log("PROPERTY DETAILS", propertyDetails);
+
+  if (isError) {
+    Toast.show({
+      type: "error",
+      text1: "Error",
+      text2: "Failed to fetch Nearby Properties",
+    });
+  }
+  return {
+    propertyDetails,
+    refetchPropertyDetails: refetch,
+    isPropertyDetailsFetched: isFetched,
+    isPropertyDetailsPending: isPending,
+    isPropertyDetailsSuccess: isSuccess,
+    isPropertyDetailsError: isError,
   };
 };
