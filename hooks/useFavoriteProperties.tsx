@@ -1,7 +1,7 @@
 // context imports
 import { useUserContext } from "@/context/userContext";
 // types imports
-import { Property } from "@/types/type";
+import { Properties, Property } from "@/types/type";
 // react imports
 import { useCallback, useMemo } from "react";
 // toast imports
@@ -9,16 +9,16 @@ import Toast from "react-native-toast-message";
 
 const useFavoriteProperties = (property: Property) => {
   const { favorites, setFavorites } = useUserContext();
-  const id = property.id;
+  const id = property?._id;
 
   const isLiked = useMemo(
-    () => favorites.some((likedProperty: Property) => likedProperty.id === id),
+    () => favorites.some((likedProperty: Property) => likedProperty._id === id),
     [favorites, id],
   );
 
   const toggleLike = useCallback(() => {
-    setFavorites((prevFavorites: Property[]) => {
-      const exists = prevFavorites.some((p) => p.id === id);
+    setFavorites((prevFavorites: Properties) => {
+      const exists = prevFavorites?.some((p: Property) => p._id === id);
 
       if (exists) {
         Toast.show({
@@ -26,7 +26,7 @@ const useFavoriteProperties = (property: Property) => {
           text1: "Removed from favorites",
           text2: "Property has been removed from your favorites.",
         });
-        return prevFavorites.filter((p) => p.id !== id);
+        return prevFavorites?.filter((p) => p._id !== id);
       }
 
       Toast.show({

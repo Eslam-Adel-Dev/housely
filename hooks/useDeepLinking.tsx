@@ -33,7 +33,7 @@ export const useSharePropertyLink = (id: string) => {
     try {
       const link = Linking.createURL(`property/${id}`);
       await Share.share({
-        message: `Check out this property: ${"www.google.com"}`,
+        message: `Check out this property: ${link}`,
         url: link,
         title: "Property link",
       });
