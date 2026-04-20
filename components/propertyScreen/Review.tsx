@@ -9,7 +9,7 @@ import useScreenDimensions from "@/hooks/useScreenDimensions";
 
 //=============================================
 
-const ReviewComp = ({ user, comment, rating, image }: Review) => {
+const ReviewComp = ({ user, comment, rating }: Review) => {
   const { screenWidth } = useScreenDimensions();
 
   return (
@@ -18,14 +18,14 @@ const ReviewComp = ({ user, comment, rating, image }: Review) => {
       style={{ width: screenWidth - 60 }}
     >
       <Image
-        source={{ uri: image }}
+        source={{ uri: user?.image }}
         className="w-14 h-14 rounded-full bg-primary-300 "
-        resizeMode="contain"
+        resizeMode="cover"
       />
       <View className="flex-1 gap-1">
         <View className="flex-row items-center justify-between">
           <Text className="text-xl font-bold" numberOfLines={1}>
-            {user}
+            {user?.name}
           </Text>
           <ReviewStars reviews={rating} starSize={15} />
         </View>
