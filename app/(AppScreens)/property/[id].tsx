@@ -2,13 +2,13 @@
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 // components imports
 import CustomButton from "@/components/CustomButton";
+import PropertyDetailsError from "@/components/error/PropertyDetailsError";
 import TitleBar from "@/components/layout/TitleBar";
 import ReviewComp from "@/components/propertyScreen/Review";
 import ScreenWrapper from "@/components/ScreenWrapper";
+import PropertyDetailsSkeleton from "@/components/skeletons/PropertyDetailsSkeleton";
 // swiper imports
 import Swiper from "react-native-swiper";
-// data imports
-import { properties, users } from "@/data/data";
 // map imports
 import { Camera, MapView, MarkerView } from "@maplibre/maplibre-react-native";
 // flashlist imports
@@ -27,43 +27,56 @@ import MapPin from "@/assets/icons/map-pin-icon.svg";
 import ShareIcon from "@/assets/icons/share-2.svg";
 import NotLiked from "@/assets/icons/tabBarIcons/inactive/Heart.svg";
 // hooks imports
+import { usePropertyDetails } from "@/api/hooks/useProperties";
 import { usePhoneLinking, useSharePropertyLink } from "@/hooks/useDeepLinking";
+// types imports
 import useFavoriteProperties from "@/hooks/useFavoriteProperties";
+import { Review } from "@/types/type";
+import { RefreshControl } from "react-native";
 
 //===========================================================
 
 const PropertyComp = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const state = properties.filter((property) => property.id === id)[0];
-  const { isLiked, toggleLike } = useFavoriteProperties(state);
-  const { handleLinking } = usePhoneLinking(state.agent.phone);
-  const { handleShare } = useSharePropertyLink(id);
-  const agent = Object.values(users).filter(
-    (user) => user._id === state.agent.id,
-  )[0];
+
+  const {
+    propertyDetails,
+    isPropertyDetailsPending,
+    isPropertyDetailsError,
+    refetchPropertyDetails,
+  } = usePropertyDetails(id);
   const router = useRouter();
+  // custom hooks
+  const { handleShare } = useSharePropertyLink(id);
+  const { handleLinking } = usePhoneLinking(propertyDetails?.agent.phone);
+  const { isLiked, toggleLike } = useFavoriteProperties(propertyDetails);
 
   // mavigation functions
   const handleChat = () => {
-    router.push(`/chat/${agent._id}`);
+    router.push(`/chat/${propertyDetails?.agent?._id}`);
   };
 
   const handleRentNow = () => {
     router.push(`/property/rent/${id}`);
   };
 
-  // render function
-  if (!state)
-    return (
-      <ScreenWrapper>
-        <Text>Property not found</Text>
-      </ScreenWrapper>
-    );
+  // render error page
+  if (isPropertyDetailsError)
+    return <PropertyDetailsError onRetry={refetchPropertyDetails} />;
+  // render skeleton
+  if (isPropertyDetailsPending) return <PropertyDetailsSkeleton />;
 
   // main return
   return (
     <ScreenWrapper className="relative">
-      <ScrollView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={isPropertyDetailsPending}
+            onRefresh={refetchPropertyDetails}
+          />
+        }
+      >
         <View className="gap-7 mb-5">
           <TitleBar title="Details">
             <View className="flex-row items-center justify-center gap-5">
@@ -82,7 +95,7 @@ const PropertyComp = () => {
           {/* Swiper */}
           <View className="h-[250px] rounded-2xl overflow-hidden">
             <Swiper loop={true} autoplay={true} activeDotColor="#7F56D9">
-              {state.images.map((image, index) => (
+              {propertyDetails?.images.map((image: string, index: number) => (
                 <Image
                   key={index}
                   source={{ uri: image }}
@@ -94,11 +107,13 @@ const PropertyComp = () => {
           {/* property name ,price ,location */}
           <View className="gap-3">
             <View className="flex-row items-center justify-between">
-              <Text className="text-2xl font-bold w-[70%]">{state.name}</Text>
+              <Text className="text-2xl font-bold w-[70%]">
+                {propertyDetails?.name}
+              </Text>
 
               <View className="p-2 py-1 rounded-xl flex-row gap-1 z-10 ">
                 <Text className="text-primary-600 font-extrabold text-xl -mt-1">
-                  ${state.rentPerMonth}
+                  ${propertyDetails?.rentPerMonth}
                 </Text>
                 <Text className="text-zinc-400">/month</Text>
               </View>
@@ -106,7 +121,9 @@ const PropertyComp = () => {
 
             <View className="flex-row gap-2 items-center -ml-1">
               <Location className="w-4 h-4" />
-              <Text className="text-zinc-400 text-lg">{state.location}</Text>
+              <Text className="text-zinc-400 text-lg">
+                {propertyDetails?.address}
+              </Text>
             </View>
           </View>
 
@@ -121,21 +138,23 @@ const PropertyComp = () => {
                 <Text className="text-zinc-400">Bedrooms</Text>
                 <View className="flex-row items-center gap-1">
                   <Bed size={20} />
-                  <Text className="font-bold">{state.bedrooms}</Text>
+                  <Text className="font-bold">{propertyDetails?.bedrooms}</Text>
                 </View>
               </View>
               <View className="w-1/3 gap-1">
                 <Text className="text-zinc-400">Bathtubs</Text>
                 <View className="flex-row items-center gap-1">
                   <Bath size={20} />
-                  <Text className="font-bold">{state.bathrooms}</Text>
+                  <Text className="font-bold">
+                    {propertyDetails?.bathrooms}
+                  </Text>
                 </View>
               </View>
               <View className="w-1/3 gap-1">
                 <Text className="text-zinc-400">Square</Text>
                 <View className="flex-row items-center gap-1">
                   <Area size={20} />
-                  <Text className="font-bold">{state.area}</Text>
+                  <Text className="font-bold">{propertyDetails?.area}</Text>
                 </View>
               </View>
             </View>
@@ -145,19 +164,21 @@ const PropertyComp = () => {
               <View className="w-1/3 gap-1">
                 <Text className="text-zinc-400">Build</Text>
                 <View className="flex-row items-center gap-1">
-                  <Text className="font-bold">{state.yearBuilt}</Text>
+                  <Text className="font-bold">
+                    {propertyDetails?.yearBuilt}
+                  </Text>
                 </View>
               </View>
               <View className="w-1/3 gap-1">
                 <Text className="text-zinc-400">Parking</Text>
                 <View className="flex-row items-center gap-1">
-                  <Text className="font-bold">{state.parking}</Text>
+                  <Text className="font-bold">{propertyDetails?.parking}</Text>
                 </View>
               </View>
               <View className="w-1/3 gap-1">
                 <Text className="text-zinc-400">Status</Text>
                 <View className="flex-row items-center gap-1">
-                  <Text className="font-bold">{state.status}</Text>
+                  <Text className="font-bold">{propertyDetails?.status}</Text>
                 </View>
               </View>
             </View>
@@ -169,7 +190,7 @@ const PropertyComp = () => {
               Description
             </Text>
             <Text className="text-zinc-400 text-md leading-6">
-              {state.description}
+              {propertyDetails?.description}
             </Text>
           </View>
 
@@ -180,17 +201,19 @@ const PropertyComp = () => {
               <View className="flex-row items-center gap-4">
                 <Image
                   source={{
-                    uri: agent
-                      ? agent.image
+                    uri: propertyDetails?.agent.image
+                      ? propertyDetails?.agent.image
                       : "https://www.loremfaces.net/96/id/1.jpg",
                   }}
                   className="w-14 h-14 rounded-full bg-primary-300"
-                  resizeMode="contain"
+                  resizeMode="cover"
                 />
                 <View>
-                  <Text className="font-bold ">{state.agent.name}</Text>
+                  <Text className="font-bold ">
+                    {propertyDetails?.agent.name}
+                  </Text>
                   <Text className="text-zinc-400" numberOfLines={1}>
-                    {state.agent.profession}
+                    {propertyDetails?.agent.profession}
                   </Text>
                 </View>
               </View>
@@ -240,14 +263,17 @@ const PropertyComp = () => {
               >
                 <Camera
                   centerCoordinate={[
-                    state.coords.longitude,
-                    state.coords.latitude,
+                    propertyDetails?.location.coordinates[0],
+                    propertyDetails?.location.coordinates[1],
                   ]}
                   zoomLevel={16}
                 />
 
                 <MarkerView
-                  coordinate={[state.coords.longitude, state.coords.latitude]}
+                  coordinate={[
+                    propertyDetails?.location.coordinates[0],
+                    propertyDetails?.location.coordinates[1],
+                  ]}
                 >
                   <MapPin width={30} height={30} />
                 </MarkerView>
@@ -260,14 +286,16 @@ const PropertyComp = () => {
             <Text className="text-xl font-bold">Reviews</Text>
 
             <FlashList
-              data={state.reviews}
-              renderItem={({ item }) => <ReviewComp {...item} />}
+              data={propertyDetails?.reviews}
+              renderItem={({ item }: { item: Review }) => (
+                <ReviewComp {...item} />
+              )}
               horizontal={true}
               keyExtractor={(item) => {
-                if (typeof item.id === "number") {
-                  return item.id.toString();
+                if (typeof item._id === "number") {
+                  return item._id.toString();
                 }
-                return item.id;
+                return item._id;
               }}
               ItemSeparatorComponent={() => <View className="w-4" />}
               showsHorizontalScrollIndicator={false}

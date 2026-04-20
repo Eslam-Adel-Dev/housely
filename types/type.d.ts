@@ -126,10 +126,11 @@ export interface Coordinates {
 }
 
 export interface Review {
-  user: string;
+  _id: string | number;
+  user: User;
+  property: string;
   comment: string;
   rating: number;
-  image?: string;
 }
 
 export interface Agent {
@@ -257,9 +258,9 @@ export interface UserContextType {
   login: () => void;
   logout: () => void;
   userLocation: Coordinates | null;
-  setUserLocation: (location: Coordinates | null) => void;
-  setIsLogged: (isLogged: boolean) => void;
-  setFavorites: (favorites: Properties) => void;
+  setUserLocation: Dispatch<SetStateAction<Coordinates | null>>;
+  setIsLogged: Dispatch<SetStateAction<boolean>>;
+  setFavorites: Dispatch<SetStateAction<Properties>>;
 }
 
 //==============================================
