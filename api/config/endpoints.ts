@@ -14,5 +14,6 @@ export const ENDPOINTS = {
     RECOMMENDED: "/properties/recommended",
     POPULAR: "/properties/popular",
     NEARBY: "/properties/nearby",
+    PROPERTY: "/properties",
   },
 };
