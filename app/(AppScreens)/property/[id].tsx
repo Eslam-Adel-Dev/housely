@@ -1,5 +1,12 @@
 // react native imports
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  RefreshControl,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 // components imports
 import CustomButton from "@/components/CustomButton";
 import PropertyDetailsError from "@/components/error/PropertyDetailsError";
@@ -29,10 +36,9 @@ import NotLiked from "@/assets/icons/tabBarIcons/inactive/Heart.svg";
 // hooks imports
 import { usePropertyDetails } from "@/api/hooks/useProperties";
 import { usePhoneLinking, useSharePropertyLink } from "@/hooks/useDeepLinking";
+import { useFavoriteProperties } from "@/hooks/useFavoriteProperties";
 // types imports
-import useFavoriteProperties from "@/hooks/useFavoriteProperties";
-import { Review } from "@/types/type";
-import { RefreshControl } from "react-native";
+import { Property, Review } from "@/types/type";
 
 //===========================================================
 
@@ -45,11 +51,16 @@ const PropertyComp = () => {
     isPropertyDetailsError,
     refetchPropertyDetails,
   } = usePropertyDetails(id);
+
   const router = useRouter();
+
   // custom hooks
   const { handleShare } = useSharePropertyLink(id);
   const { handleLinking } = usePhoneLinking(propertyDetails?.agent.phone);
-  const { isLiked, toggleLike } = useFavoriteProperties(propertyDetails);
+  const { toggleLike, favorites } = useFavoriteProperties();
+
+  // check if property is liked
+  const isLiked = favorites?.some((prop: Property) => prop._id === id);
 
   // mavigation functions
   const handleChat = () => {
@@ -83,7 +94,11 @@ const PropertyComp = () => {
               <TouchableOpacity onPress={handleShare}>
                 <ShareIcon size={30} />
               </TouchableOpacity>
-              <TouchableOpacity onPress={toggleLike}>
+              <TouchableOpacity
+                onPress={() =>
+                  toggleLike(propertyDetails, isLiked ? "remove" : "add")
+                }
+              >
                 {isLiked ? (
                   <Liked className="w-[60%] h-[60%]" />
                 ) : (
