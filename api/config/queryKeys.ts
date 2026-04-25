@@ -12,5 +12,6 @@ export const QUERY_KEYS = {
     POPULAR: "popular",
     NEARBY: "nearby",
     PROPERTY: "property",
+    FAVORITES: "favorites",
   },
 };

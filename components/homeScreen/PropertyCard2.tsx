@@ -9,22 +9,23 @@ import RateStars from "../RateStars";
 // types imports
 import { Property, fullWidthType } from "@/types/type";
 // hooks
-import useFavoriteProperties from "@/hooks/useFavoriteProperties";
+import { useFavoriteProperties } from "@/hooks/useFavoriteProperties";
 import useScreenDimensions from "@/hooks/useScreenDimensions";
 // expo router
 import { useRouter } from "expo-router";
-// utils
 
 //=============================================
 
 const PropertyCard2 = (props: Property & fullWidthType) => {
-  //--------------------------------
   const { _id, name, address, rentPerMonth, images, averageRating, fullWidth } =
     props;
-  const { isLiked: isPropertyLiked, toggleLike } = useFavoriteProperties(props);
+  const { toggleLike, favorites } = useFavoriteProperties();
   const { screenWidth } = useScreenDimensions();
   const image = images && images[0];
   const router = useRouter();
+
+  const isLiked = favorites?.some((item: Property) => item._id === _id);
+
   //--------------------------------
 
   return (
@@ -53,8 +54,10 @@ const PropertyCard2 = (props: Property & fullWidthType) => {
           <Text className="font-bold text-lg pr-5 w-[85%]" numberOfLines={1}>
             {name}
           </Text>
-          <TouchableOpacity onPress={toggleLike}>
-            {isPropertyLiked ? <Liked className="w-20 h-20" /> : <NotLiked />}
+          <TouchableOpacity
+            onPress={() => toggleLike(props, isLiked ? "remove" : "add")}
+          >
+            {isLiked ? <Liked className="w-20 h-20" /> : <NotLiked />}
           </TouchableOpacity>
         </View>
         {/* ------------------------ */}

@@ -1,7 +1,7 @@
 // expo imports
 import { LinearGradient } from "expo-linear-gradient";
-// react native imports
 import { useRouter } from "expo-router";
+// react native imports
 import { Image, Text, TouchableOpacity, View } from "react-native";
 // icons imports
 import Liked from "@/assets/icons/Heart.svg";
@@ -10,18 +10,15 @@ import NotLiked from "@/assets/icons/tabBarIcons/inactive/Heart.svg";
 // types imports
 import { Property } from "@/types/type";
 // hooks
-import useFavoriteProperties from "@/hooks/useFavoriteProperties";
+import { useFavoriteProperties } from "@/hooks/useFavoriteProperties";
+
+//=========================================================
 
 const PropertyCard = (props: Property) => {
   const { _id, name, address, rentPerMonth, image } = props;
-  const { isLiked: isPropertyLiked, toggleLike } = useFavoriteProperties(props);
+  const { favorites, toggleLike } = useFavoriteProperties();
+  const isLiked = favorites?.some((item: Property) => item._id === _id);
   const router = useRouter();
-
-  //=========================================================
-
-  const handleLike = toggleLike;
-
-  //=========================================================
 
   return (
     <TouchableOpacity
@@ -53,19 +50,17 @@ const PropertyCard = (props: Property) => {
         </View>
       </View>
       {/* --------------------------------- */}
-
       <TouchableOpacity
         className="absolute bottom-5 right-5 z-10 size-10 rounded-full items-center justify-center bg-white"
-        onPress={handleLike}
+        onPress={() => toggleLike(props, isLiked ? "remove" : "add")}
       >
-        {isPropertyLiked ? (
+        {isLiked ? (
           <Liked className="w-[60%] h-[60%]" />
         ) : (
           <NotLiked className="w-[60%] h-[60%]" />
         )}
       </TouchableOpacity>
       {/* --------------------------------- */}
-
       <LinearGradient
         colors={["black", "transparent"]}
         start={{ x: 0, y: 1.7 }}
