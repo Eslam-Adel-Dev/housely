@@ -145,3 +145,21 @@ export const calculatePrice = (
   const priceForDays = pricePerDay * days;
   return priceForMonths + priceForDays;
 };
+
+//=============================================
+
+export const convertToBase64 = async (uri: string): Promise<string> => {
+  try {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  } catch (error) {
+    console.error("Failed to convert to base64:", error);
+    throw error;
+  }
+};
