@@ -1,9 +1,8 @@
 import { useUserStore } from "@/store/userStore";
 import { ENDPOINTS } from "../config/endpoints";
-import { usePatchHook } from "./useMethods";
+import { usePatchHook, usePostHook } from "./useMethods";
 
 //================================================================
-
 
 export const useUserProfileImage = () => {
   const { updateUser } = useUserStore();
