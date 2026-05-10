@@ -1,8 +1,11 @@
 import { ENDPOINTS } from "@/api/config/endpoints";
 import { storage } from "@/lib/mmkvStorage";
+import { useUserStore } from "@/store/userStore";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
 import { usePostHook } from "./useMethods";
+
+//================================================================
 
 //================================================================
 // LOGOUT hook
@@ -23,6 +26,7 @@ export const useLogout = () => {
 // LOGIN hook
 
 export const useLogin = () => {
+  const { setAuth } = useUserStore();
   const { mutate, isError, isPaused, isPending, isSuccess } = usePostHook(
     ENDPOINTS.AUTH.LOGIN,
   );
@@ -36,8 +40,12 @@ export const useLogin = () => {
       {
         onSuccess: (data) => {
           const token = data.token;
+          const user = data?.data;
+
+          setAuth(user, token);
           storage.set("token", token);
           router.push("/(AppScreens)/(tabs)");
+
           Toast.show({
             text1: "WELCOME BACK",
             text2: "Successfully signed in",
@@ -59,6 +67,7 @@ export const useLogin = () => {
 // REGISTER hook
 
 export const useRegister = () => {
+  const { setAuth } = useUserStore();
   const { mutate, isError, isPaused, isPending, isSuccess } = usePostHook(
     ENDPOINTS.AUTH.REGISTER,
   );
