@@ -1,4 +1,10 @@
-import { deleteApi, getApi, postApi, putApi } from "@/api/axios/methods";
+import {
+  deleteApi,
+  getApi,
+  patchApi,
+  postApi,
+  putApi,
+} from "@/api/axios/methods";
 import {
   useMutation,
   UseMutationOptions,
@@ -14,7 +20,7 @@ export const useGetHook = (
   endpoint: string,
   queryKey: any,
   axiosOptions?: any,
-  queryOptions?: UseQueryOptions<any, any, any, any>,
+  queryOptions?: Omit<UseQueryOptions<any, any, any, any>, "queryKey" | "queryFn">,
 ) => {
   return useQuery({
     queryFn: () => getApi(endpoint, axiosOptions),
@@ -102,6 +108,40 @@ export const useDeleteHook = (
 ) => {
   return useMutation({
     mutationFn: (data: any) => deleteApi(endpoint, axiosOptions),
+    ...mutationOptions,
+    onSuccess: (data: any, variables: any, context: any) => {
+      if (data.message) {
+        Toast.show({
+          type: "success",
+          text1: data.message,
+        });
+      }
+      if (mutationOptions?.onSuccess) {
+        mutationOptions.onSuccess(data, variables, context);
+      }
+    },
+    onError: (error: any, variables: any, context: any) => {
+      Toast.show({
+        type: "error",
+        text1: error.message,
+      });
+      if (mutationOptions?.onError) {
+        mutationOptions.onError(error, variables, context);
+      }
+    },
+  });
+};
+
+//============================================================
+// PATCH Request Hook
+
+export const usePatchHook = (
+  endpoint: string,
+  axiosOptions?: any,
+  mutationOptions?: UseMutationOptions<any, any, any, any>,
+) => {
+  return useMutation({
+    mutationFn: (data: any) => patchApi(endpoint, data, axiosOptions),
     ...mutationOptions,
     onSuccess: (data: any, variables: any, context: any) => {
       if (data.message) {

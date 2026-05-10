@@ -55,3 +55,19 @@ export const deleteApi = async (url: string, options?: AxiosRequestConfig) => {
     return Promise.reject(error);
   }
 };
+
+//=========================================
+// PATCH request
+
+export const patchApi = async (
+  url: string,
+  data: any,
+  options?: AxiosRequestConfig,
+) => {
+  try {
+    const response = await axiosInstance.patch(url, data, options);
+    return response;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
