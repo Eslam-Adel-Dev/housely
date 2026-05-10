@@ -2,6 +2,7 @@
 import { Dispatch, SetStateAction } from "react";
 import { ImageSourcePropType as ImageSourceProp } from "react-native";
 import { SvgProps } from "react-native-svg";
+import { Socket } from "socket.io-client";
 
 //==============================================
 
@@ -309,4 +310,17 @@ export interface UserState {
   setAuth: (user: User, token: string) => void;
   updateUser: (updates: Partial<User>) => void;
   clearUser: () => void;
+}
+
+//==============================================
+// socket types
+
+export interface SocketContextType {
+  socket: Socket;
+  isConnected: boolean;
+  setIsConnected: (value: boolean) => void;
+}
+
+interface SocketProviderProps {
+  children: React.ReactNode;
 }
