@@ -1,5 +1,5 @@
 // react native imports
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 // icons imports
 import Camera from "@/assets/icons/Camera.svg";
 import ArrowRight from "@/assets/icons/profileScreen/ArrowRight.svg";
@@ -15,19 +15,22 @@ import { FlashList } from "@shopify/flash-list";
 // images imports
 import profilePic from "@/assets/images/profilePic.jpg";
 // types imports
-import { ProfileProps } from "@/types/type";
-// context imports
+import { OptionProps, ProfileProps } from "@/types/type";
 // hooks imports
 import { useLogout } from "@/api/hooks/useAuth";
-import { useMediaPicker } from "@/hooks/useMediaPicker";
-// toast imports
+import { useProfileImageUpload } from "@/hooks/profile/useProfileImageUpload";
+// store imports
+import { useUserStore } from "@/store/userStore";
 
 //=========================================================
 
 const Profile = ({ optionName, Icon }: ProfileProps) => {
-  const { media, handleMediaPicker } = useMediaPicker();
+  // hooks
+  const { user } = useUserStore();
+  const { handleImagePick, isUploading } = useProfileImageUpload();
   const useLogoutHook = () => useLogout();
 
+  // ui part
   return (
     <ScreenWrapper>
       <ScrollView className="h-full">
@@ -39,20 +42,25 @@ const Profile = ({ optionName, Icon }: ProfileProps) => {
           <View>
             <TouchableOpacity
               className="absolute bottom-0 right-0 h-12 w-12 rounded-full bg-primary-600 items-center justify-center z-10"
-              onPress={() => handleMediaPicker("images")}
+              onPress={handleImagePick}
+              disabled={isUploading}
             >
-              <Camera className="w-[60%] h-[60%]" />
+              {isUploading ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <Camera className="w-[60%] h-[60%]" />
+              )}
             </TouchableOpacity>
             <Image
               className="rounded-full"
-              source={media ? { uri: media.uri } : profilePic}
+              source={user?.image ? { uri: user.image } : profilePic}
               style={{ width: 150, height: 150 }}
               resizeMode="cover"
             />
           </View>
           <View className="items-center justify-center gap-1">
-            <Text className="text-lg font-bold">Brooklyn Simmons</Text>
-            <Text className="text-zinc-400">BrooklynSimmons@gmail.com</Text>
+            <Text className="text-lg font-bold">{user?.name}</Text>
+            <Text className="text-zinc-400">{user?.email}</Text>
           </View>
         </View>
         {/* --------------------------------------- */}
@@ -77,11 +85,6 @@ const Profile = ({ optionName, Icon }: ProfileProps) => {
 export default Profile;
 
 //================================================
-
-interface OptionProps {
-  Icon: React.ComponentType<any>;
-  optionName: string;
-}
 
 export const Option = ({ Icon, optionName }: OptionProps) => {
   const router = useRouter();

@@ -14,4 +14,9 @@ export const QUERY_KEYS = {
     PROPERTY: "property",
     FAVORITES: "favorites",
   },
+  USER: {
+    LOCATION: "location",
+    PROFILE: "profile",
+    PROFILE_IMAGE: "profile-image",
+  },
 };

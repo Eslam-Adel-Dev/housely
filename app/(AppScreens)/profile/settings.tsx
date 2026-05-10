@@ -1,124 +1,206 @@
 // icons imports
-import Camera from "@/assets/icons/Camera.svg";
 import Feather from "@expo/vector-icons/Feather";
 // components imports
 import CustomButton from "@/components/CustomButton";
 import ScreenWrapper from "@/components/ScreenWrapper";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import CustomInput from "@/components/inputs/CustomInput";
+import PhoneInput from "@/components/inputs/PhoneInput";
 // expo imports
 import { useRouter } from "expo-router";
 // react imports
 import { useState } from "react";
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+// react hook form
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Controller, useForm } from "react-hook-form";
+// yup schemas
+import {
+  SettingsFormData,
+  settingsSchema,
+} from "@/lib/yupSchemas/settingsSchema";
 // images imports
-import profilePic from "@/assets/images/profilePic.jpg";
+import { useUpdateUserProfile } from "@/api/hooks/useUser";
+import { useUserStore } from "@/store/userStore";
 // date package imports
+import CountryPickerModal, {
+  CountryItem,
+} from "@/components/CountryPickerModal";
 
 //=========================================================
-
-const styles = {
-  textInput: "h-16 rounded-2xl bg-white text-lg px-5",
-};
 
 //=========================================================
 
 const Settings = () => {
-  const [focusedEmail, setFocusedEmail] = useState(false);
-  const [focusedUsername, setFocusedUsername] = useState(false);
-  const [focusedDate, setFocusedDate] = useState(false);
+  // Country Picker State
+  const [pickerVisible, setPickerVisible] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState<CountryItem>({
+    name: "Egypt",
+    flag: "🇪🇬",
+    dial_code: "20",
+    code: "EG",
+  });
+
   const router = useRouter();
+
+  // user store
+  const { user } = useUserStore();
+  const { updateProfile, isPending } = useUpdateUserProfile();
+
+  const userPhone = user?.phone?.split("+")[1];
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SettingsFormData>({
+    resolver: yupResolver(settingsSchema),
+    defaultValues: {
+      name: user?.name || "",
+      email: user?.email || "",
+      profession: user?.profession || "",
+      phone: userPhone || "",
+    },
+  });
+
+  const handleUpdate = (data: SettingsFormData) => {
+    updateProfile({
+      ...data,
+      phone: `+${selectedCountry.dial_code}${data.phone}`,
+    });
+  };
 
   return (
     <ScreenWrapper className="p-4 bg-[#fcfcfd]">
-      <ScrollView className="h-full">
-        <TouchableOpacity onPress={() => router.back()}>
-          <Feather name="arrow-left" size={24} color="gray" />
-        </TouchableOpacity>
-        {/* ---------------------------------- */}
-        <View className="py-12 w-full items-center justify-center gap-4">
-          <View>
-            <View className="absolute bottom-0 right-0 h-12 w-12 rounded-full bg-primary-600 items-center justify-center z-10">
-              <Camera className="w-[60%] h-[60%] " />
-            </View>
-            <Image
-              className="rounded-full"
-              source={profilePic}
-              style={{ width: 150, height: 150 }}
-              resizeMode="cover"
-            />
-          </View>
-          <View className="items-center justify-center gap-1">
-            <Text className="text-lg font-bold">Brooklyn Simmons</Text>
-            <Text className="text-zinc-400">BrooklynSimmons@gmail.com</Text>
-          </View>
+      <TouchableOpacity onPress={() => router.back()}>
+        <Feather name="arrow-left" size={24} color="gray" />
+      </TouchableOpacity>
+      {/* ---------------------------------- */}
+      <View className="py-12 w-full items-center justify-center gap-4">
+        <View>
+          <Image
+            className="rounded-full"
+            source={{ uri: user?.image || "" }}
+            style={{ width: 150, height: 150 }}
+            resizeMode="cover"
+          />
         </View>
-        {/* ---------------------------------- */}
-        <View className="mb-10">
-          <View className="flex gap-2 mb-5">
-            <Label
-              nativeID="username"
-              htmlFor="username"
-              className="text-lg font-bold"
-            >
-              Username
-            </Label>
-            <Input
-              id="username"
-              keyboardType="default"
-              textContentType="name"
-              autoComplete="name"
-              placeholder="Username"
-              onFocus={() => setFocusedUsername(true)}
-              onBlur={() => setFocusedUsername(false)}
-              className={`${focusedUsername ? "border-primary-600 border-[1.5px]" : "border-zinc-300"} ${styles.textInput} placeholder:text-zinc-400 text-zinc-600`}
-            />
-          </View>
-          <View className="flex gap-2 mb-5">
-            <Label
-              nativeID="email"
-              htmlFor="email"
-              className="text-lg font-bold"
-            >
-              Email
-            </Label>
-            <Input
-              id="email"
-              keyboardType="email-address"
-              textContentType="emailAddress"
-              autoComplete="email"
-              placeholder="Email"
-              onFocus={() => setFocusedEmail(true)}
-              onBlur={() => setFocusedEmail(false)}
-              className={`${focusedEmail ? "border-primary-600 border-[1.5px]" : "border-zinc-300"} ${styles.textInput} placeholder:text-zinc-400 text-zinc-600`}
-            />
-          </View>
-          <View className="flex gap-2 mb-5">
-            <Label nativeID="date" htmlFor="date" className="text-lg font-bold">
-              Date
-            </Label>
-            <Input
-              id="date"
-              keyboardType="default"
-              textContentType="dateTime"
-              autoComplete="cc-exp-day"
-              placeholder="2023-10-10"
-              onFocus={() => setFocusedDate(true)}
-              onBlur={() => setFocusedDate(false)}
-              className={`${focusedDate ? "border-primary-600 border-[1.5px]" : "border-zinc-300"} ${styles.textInput} placeholder:text-zinc-400 text-zinc-600`}
-            />
-          </View>
+        <View className="items-center justify-center gap-1">
+          <Text className="text-lg font-bold">{user?.name}</Text>
+          <Text className="text-zinc-400">{user?.email}</Text>
         </View>
-        {/* ---------------------------------- */}
-
-        <CustomButton
-          onButtonPress={() => router.push("/")}
-          className="rounded-lg"
-          textClassName="text-white"
+      </View>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
+      >
+        <ScrollView
+          className="h-full"
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
-          Save Changes
-        </CustomButton>
-      </ScrollView>
+          {/* ---------------------------------- */}
+          <View className="mb-10">
+            <Controller
+              name="name"
+              control={control}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <CustomInput
+                  label="Name"
+                  placeholder="Enter your name"
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  value={value}
+                  error={errors.name?.message}
+                  textContentType="name"
+                  autoComplete="name"
+                />
+              )}
+            />
+
+            <Controller
+              name="email"
+              control={control}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <CustomInput
+                  label="Email"
+                  placeholder="Enter your email"
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  value={value}
+                  error={errors.email?.message}
+                  keyboardType="email-address"
+                  textContentType="emailAddress"
+                  autoComplete="email"
+                  autoCapitalize="none"
+                />
+              )}
+            />
+
+            <Controller
+              name="profession"
+              control={control}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <CustomInput
+                  label="Profession"
+                  placeholder="Enter your profession"
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  value={value}
+                  error={errors.profession?.message}
+                />
+              )}
+            />
+
+            <Controller
+              name="phone"
+              control={control}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <PhoneInput
+                  label="Phone Number"
+                  placeholder="Enter your phone number"
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  value={value}
+                  error={errors.phone?.message}
+                  selectedCountry={selectedCountry}
+                  onPickerPress={() => setPickerVisible(true)}
+                />
+              )}
+            />
+          </View>
+          {/* ---------------------------------- */}
+
+          <CustomButton
+            onButtonPress={handleSubmit(handleUpdate)}
+            className="rounded-lg"
+            textClassName="text-white"
+            loading={isPending}
+            disabled={isPending}
+          >
+            Save Changes
+          </CustomButton>
+        </ScrollView>
+      </KeyboardAvoidingView>
+
+      {/* Country Picker Modal */}
+      <CountryPickerModal
+        visible={pickerVisible}
+        onClose={() => setPickerVisible(false)}
+        onSelect={(country) => {
+          setSelectedCountry(country);
+          setPickerVisible(false);
+        }}
+      />
     </ScreenWrapper>
   );
 };

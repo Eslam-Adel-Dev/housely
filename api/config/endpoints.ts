@@ -17,4 +17,14 @@ export const ENDPOINTS = {
     PROPERTY: "/properties",
     FAVORITES: "/properties/favorites",
   },
+  USER: {
+    LOCATION: "/user/location",
+    PROFILE: "/user/profile",
+    PROFILE_IMAGE: "/user/profile/image",
+  },
+  MESSAGES: {
+    CONVERSATIONS: "chat/conversations",
+    MESSAGES: "chat/messages",
+    CREATE_CONVERSATION: "chat/conversation",
+  },
 };

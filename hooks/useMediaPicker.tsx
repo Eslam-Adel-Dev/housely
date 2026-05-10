@@ -18,9 +18,14 @@ export const useMediaPicker = () => {
         return;
       }
       let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: [MediaType],
+        mediaTypes:
+          MediaType === "images"
+            ? ImagePicker.MediaTypeOptions.Images
+            : ImagePicker.MediaTypeOptions.Videos,
         allowsEditing: MediaType === "images" ? true : false,
-        quality: 1,
+        quality: 0.4, // Reduce quality for faster transfer
+        base64: true,
+        videoExportPreset: ImagePicker.VideoExportPreset.H264_640x480, // Compress video for socket transfer
       });
 
       if (!result.canceled) {
