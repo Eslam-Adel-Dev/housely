@@ -9,72 +9,32 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-
 // expo icons imports
 import Feather from "@expo/vector-icons/Feather";
 // components imports
 import CustomButton from "@/components/CustomButton";
 import ScreenWrapper from "@/components/ScreenWrapper";
-// expo imports
-import { useLocalSearchParams, useRouter } from "expo-router";
-// react otp import
-import { OtpInput } from "react-native-otp-entry";
-// types imports
-import { verifyAccountInput } from "@/types/type";
-// react-hook-form imports
-import { Controller, useForm } from "react-hook-form";
+import OTPSection from "@/components/auth/OTPSection";
 // hooks imports
-import { useResendCode, useVerifyAccount } from "@/api/hooks/useAuth";
-import { useResendTimer } from "@/hooks/useResendTimer";
-// yup schemas
+import { useVerifyAccountSession } from "@/hooks/auth/useVerifyAccountSession";
 
 //=========================================================
 
 const VerifyAccount = () => {
-  const { timer, canResend, resetTimer } = useResendTimer(60);
   const { height } = useWindowDimensions();
-  const router = useRouter();
-  const { mutateResend, isPending: isResending } = useResendCode();
-  const { mutateVerify, isPending: isVerifying } = useVerifyAccount();
-  const { email, mode } = useLocalSearchParams<{
-    email: string;
-    mode: "register" | "reset";
-  }>();
-
-  const { control, handleSubmit, setValue } = useForm({
-    defaultValues: {
-      otp: "",
-    },
-  });
-
-  // -----------------------
-
-  const handleVerify = async (data: verifyAccountInput) => {
-    try {
-      mutateVerify({
-        email: email!,
-        code: data.otp,
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleResend = () => {
-    if (!canResend) return;
-
-    mutateResend(
-      {
-        identifier: email!,
-        mode: mode === "register" ? "register" : "reset",
-      },
-      () => {
-        resetTimer();
-      },
-    );
-  };
-
-  // -----------------------
+  const {
+    email,
+    mode,
+    timer,
+    canResend,
+    isResending,
+    isVerifying,
+    control,
+    handleSubmit,
+    handleVerify,
+    handleResend,
+    goBack,
+  } = useVerifyAccountSession();
 
   return (
     <ScreenWrapper className="p-4 bg-[#fcfcfd]">
@@ -91,7 +51,7 @@ const VerifyAccount = () => {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <TouchableOpacity onPress={() => router.back()}>
+          <TouchableOpacity onPress={goBack}>
             <Feather name="arrow-left" size={24} color="gray" />
           </TouchableOpacity>
 
@@ -106,46 +66,14 @@ const VerifyAccount = () => {
           </View>
 
           {/* OTP Section */}
-          <View style={styles.otpSection}>
-            <Controller
-              name="otp"
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <OtpInput
-                  numberOfDigits={6}
-                  focusColor="#7F56D9"
-                  placeholder="******"
-                  blurOnFilled={true}
-                  onTextChange={onChange}
-                  onFilled={(text) => handleVerify({ otp: text })}
-                  theme={{
-                    pinCodeContainerStyle: styles.pinCodeContainerStyle,
-                    pinCodeTextStyle: styles.pinCodeTextStyle,
-                  }}
-                />
-              )}
-            />
-
-            {/* Resend code */}
-            <View className="items-center justify-center gap-2 mt-4">
-              <Text className="text-zinc-400 text-lg text-center">
-                Didn&apos;t receive a code?
-              </Text>
-              <TouchableOpacity onPress={handleResend} disabled={!canResend}>
-                <Text
-                  className={`text-lg font-bold ${
-                    canResend ? "text-primary-600" : "text-zinc-400"
-                  }`}
-                >
-                  {isResending
-                    ? "Sending..."
-                    : canResend
-                      ? "Resend Code"
-                      : `Resend in ${timer}s`}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          <OTPSection
+            control={control}
+            onVerify={handleVerify}
+            onResend={handleResend}
+            canResend={canResend}
+            isResending={isResending}
+            timer={timer}
+          />
 
           <View className="mt-auto">
             <CustomButton
@@ -174,24 +102,5 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingBottom: 16,
   },
-  otpSection: {
-    flex: 1,
-    gap: 32,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 40,
-  },
-  pinCodeContainerStyle: {
-    width: 50,
-    height: 60,
-    borderRadius: 12,
-    borderWidth: 1.5,
-    borderColor: "#E5E7EB",
-    backgroundColor: "white",
-  },
-  pinCodeTextStyle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#1F2937",
-  },
 });
+

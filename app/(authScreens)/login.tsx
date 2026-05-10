@@ -1,18 +1,14 @@
 // react  imports
-import { useState } from "react";
 // components imports
 import CheckboxWithLabel from "@/components/CheckboxWithLabel";
 import CustomButton from "@/components/CustomButton";
 import ScreenWrapper from "@/components/ScreenWrapper";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import CustomInput from "@/components/inputs/CustomInput";
 // expo imports
 import { Link } from "expo-router";
 // react native imports
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
-//images imports
-import facebook_logo from "@/assets/images/facebook-logo.png";
-import google_logo from "@/assets/images/google-logo.png";
+import SocialAuth from "@/components/auth/SocialAuth";
+import { ScrollView, Text, View } from "react-native";
 // types import
 import { loginInput } from "@/types/type";
 // react hook form
@@ -24,11 +20,6 @@ import { loginSchema } from "@/lib/yupSchemas/loginSchema";
 import { useLogin } from "@/api/hooks/useAuth";
 
 //=========================================================
-
-const styles = {
-  textInput:
-    "h-16 rounded-2xl bg-white text-lg px-5 placeholder:text-zinc-400 text-zinc-600",
-};
 
 //=========================================================
 
@@ -45,9 +36,7 @@ const Login = () => {
       rememberMe: false,
     },
   });
-  const [focusedPassword, setFocusedPassword] = useState(false);
-  const [focusedEmail, setFocusedEmail] = useState(false);
-  const { mutateLogin, isPending, isSuccess, isError } = useLogin();
+  const { mutateLogin, isPending } = useLogin();
 
   // -----------------------
 
@@ -75,73 +64,39 @@ const Login = () => {
         {/* ---------------------------------- */}
         <View className="mb-10">
           {/* Email Field */}
-          <View className="flex gap-2 mb-5">
-            <Label
-              nativeID="email"
-              htmlFor="email"
-              className="text-lg font-bold"
-            >
-              Email
-            </Label>
-            <Controller
-              name="email"
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  placeholder="Enter your email"
-                  value={value}
-                  onChangeText={onChange}
-                  onFocus={() => setFocusedEmail(true)}
-                  onBlur={() => {
-                    setFocusedEmail(false);
-                    onBlur();
-                  }}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  className={`${focusedEmail ? "border-primary-600 border-[1.5px]" : errors.email ? "border-red-500 border-[1.5px]" : "border-zinc-300"} ${styles.textInput}`}
-                />
-              )}
-            />
-            {errors.email && (
-              <Text className="text-red-500 text-sm ml-1">
-                {errors.email.message}
-              </Text>
+          <Controller
+            name="email"
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <CustomInput
+                label="Email"
+                placeholder="Enter your email"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                error={errors.email?.message}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
             )}
-          </View>
+          />
 
           {/* Password Field */}
-          <View className="flex gap-2 mb-5">
-            <Label
-              nativeID="password"
-              htmlFor="password"
-              className="text-lg font-bold"
-            >
-              Password
-            </Label>
-            <Controller
-              name="password"
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  placeholder="Enter your password"
-                  value={value}
-                  onChangeText={onChange}
-                  onFocus={() => setFocusedPassword(true)}
-                  onBlur={() => {
-                    setFocusedPassword(false);
-                    onBlur();
-                  }}
-                  secureTextEntry
-                  className={`${focusedPassword ? "border-primary-600 border-[1.5px]" : errors.password ? "border-red-500 border-[1.5px]" : "border-zinc-300"} ${styles.textInput} `}
-                />
-              )}
-            />
-            {errors.password && (
-              <Text className="text-red-500 text-sm ml-1">
-                {errors.password.message}
-              </Text>
+          <Controller
+            name="password"
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <CustomInput
+                label="Password"
+                placeholder="Enter your password"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                error={errors.password?.message}
+                isPassword
+              />
             )}
-          </View>
+          />
 
           {/* Remember Me + Forgot Password */}
           <View className="flex-row items-center justify-between mb-8">
@@ -176,22 +131,7 @@ const Login = () => {
         </View>
 
         {/* ---------------------------------- */}
-        <View className="flex-row items-center justify-between gap-2 mt-5 mb-7">
-          <View className="h-[1px] bg-zinc-200 flex-1" />
-          <Text>OR</Text>
-          <View className="h-[1px] bg-zinc-200 flex-1" />
-        </View>
-
-        {/* ---------------------------------- */}
-        <View className="flex-row items-center justify-center mb-7 gap-7">
-          <TouchableOpacity className="bg-white rounded-full p-2">
-            <Image source={google_logo} className="size-10" />
-          </TouchableOpacity>
-
-          <TouchableOpacity className="bg-white rounded-full p-2">
-            <Image source={facebook_logo} className="size-10" />
-          </TouchableOpacity>
-        </View>
+        <SocialAuth />
         {/* ---------------------------------- */}
         <View>
           <Text className="text-zinc-400 text-center">

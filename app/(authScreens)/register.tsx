@@ -6,8 +6,8 @@ import Feather from "@expo/vector-icons/Feather";
 import CheckboxWithLabel from "@/components/CheckboxWithLabel";
 import CustomButton from "@/components/CustomButton";
 import ScreenWrapper from "@/components/ScreenWrapper";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import CustomInput from "@/components/inputs/CustomInput";
+import PhoneInput from "@/components/inputs/PhoneInput";
 // country picker
 import CountryPickerModal, {
   CountryItem,
@@ -15,10 +15,8 @@ import CountryPickerModal, {
 // expo imports
 import { Link, useRouter } from "expo-router";
 // react native imports
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
-// images imports
-import facebook_logo from "@/assets/images/facebook-logo.png";
-import google_logo from "@/assets/images/google-logo.png";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import SocialAuth from "@/components/auth/SocialAuth";
 // types import
 import { registerInput } from "@/types/type";
 // react hook form
@@ -30,10 +28,6 @@ import { registerSchema } from "@/lib/yupSchemas/registerSchema";
 import { useRegister } from "@/api/hooks/useAuth";
 
 //=========================================================
-
-const styles = {
-  textInput: "h-16 rounded-2xl bg-white text-lg px-5 text-zinc-600",
-};
 
 //=========================================================
 
@@ -52,10 +46,6 @@ const Register = () => {
       agreeToTerms: false,
     },
   });
-  const [focusedEmail, setFocusedEmail] = useState(false);
-  const [focusedPassword, setFocusedPassword] = useState(false);
-  const [focusedPhone, setFocusedPhone] = useState(false);
-  const [focusedName, setFocusedName] = useState(false);
 
   // Country Picker State
   const [pickerVisible, setPickerVisible] = useState(false);
@@ -103,166 +93,78 @@ const Register = () => {
         {/* ---------------------------------- */}
         <View className="mb-10">
           {/* Name Field */}
-          <View className="flex gap-2 mb-5">
-            <Label nativeID="name" htmlFor="name" className="text-lg font-bold">
-              Name
-            </Label>
-            <Controller
-              name="name"
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  id="name"
-                  placeholder="Name"
-                  value={value}
-                  onChangeText={onChange}
-                  onFocus={() => setFocusedName(true)}
-                  onBlur={() => {
-                    setFocusedName(false);
-                    onBlur();
-                  }}
-                  keyboardType="default"
-                  textContentType="name"
-                  autoComplete="name"
-                  autoCapitalize="none"
-                  className={`${focusedName ? "border-primary-600 border-[1.5px]" : errors.name ? "border-red-500 border-[1.5px]" : "border-zinc-300"} ${styles.textInput} placeholder:text-zinc-400`}
-                />
-              )}
-            />
-            {errors.name && (
-              <Text className="text-red-500 text-sm ml-1">
-                {errors.name.message}
-              </Text>
+          <Controller
+            name="name"
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <CustomInput
+                label="Name"
+                placeholder="Name"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                error={errors.name?.message}
+                textContentType="name"
+                autoComplete="name"
+              />
             )}
-          </View>
+          />
+
           {/* Email Field */}
-          <View className="flex gap-2 mb-5">
-            <Label
-              nativeID="email"
-              htmlFor="email"
-              className="text-lg font-bold"
-            >
-              Email
-            </Label>
-            <Controller
-              name="email"
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  id="email"
-                  placeholder="Email"
-                  value={value}
-                  onChangeText={onChange}
-                  onFocus={() => setFocusedEmail(true)}
-                  onBlur={() => {
-                    setFocusedEmail(false);
-                    onBlur();
-                  }}
-                  keyboardType="email-address"
-                  textContentType="emailAddress"
-                  autoComplete="email"
-                  autoCapitalize="none"
-                  className={`${focusedEmail ? "border-primary-600 border-[1.5px]" : errors.email ? "border-red-500 border-[1.5px]" : "border-zinc-300"} ${styles.textInput} placeholder:text-zinc-400`}
-                />
-              )}
-            />
-            {errors.email && (
-              <Text className="text-red-500 text-sm ml-1">
-                {errors.email.message}
-              </Text>
+          <Controller
+            name="email"
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <CustomInput
+                label="Email"
+                placeholder="Email"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                error={errors.email?.message}
+                keyboardType="email-address"
+                textContentType="emailAddress"
+                autoComplete="email"
+                autoCapitalize="none"
+              />
             )}
-          </View>
+          />
 
           {/* Phone Field */}
-          <View className="flex gap-2 mb-5">
-            <Label
-              nativeID="phone"
-              htmlFor="phone"
-              className="text-lg font-bold"
-            >
-              Phone Number
-            </Label>
-            <View className="flex-row items-center gap-2">
-              {/* Country Picker Trigger */}
-              <TouchableOpacity
-                onPress={() => setPickerVisible(true)}
-                className={`flex-row items-center justify-center h-16 px-4 rounded-2xl bg-white border-[1.5px] ${focusedPhone ? "border-primary-600" : errors.phone ? "border-red-500" : "border-zinc-300"}`}
-              >
-                <Text className="text-2xl">{selectedCountry.flag}</Text>
-                <Text className="text-zinc-600 text-lg ml-2">
-                  +{selectedCountry.dial_code}
-                </Text>
-                <Feather
-                  name="chevron-down"
-                  size={16}
-                  color="#D1D5DB"
-                  style={{ marginLeft: 4 }}
-                />
-              </TouchableOpacity>
-
-              {/* Phone Input */}
-              <Controller
-                name="phone"
-                control={control}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <Input
-                    placeholder="Enter your phone number"
-                    value={value}
-                    onChangeText={onChange}
-                    onFocus={() => setFocusedPhone(true)}
-                    onBlur={() => {
-                      setFocusedPhone(false);
-                      onBlur();
-                    }}
-                    keyboardType="phone-pad"
-                    className={`flex-1 ${focusedPhone ? "border-primary-600 border-[1.5px]" : errors.phone ? "border-red-500 border-[1.5px]" : "border-zinc-300"} ${styles.textInput}`}
-                  />
-                )}
+          <Controller
+            name="phone"
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <PhoneInput
+                label="Phone Number"
+                placeholder="Enter your phone number"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                error={errors.phone?.message}
+                selectedCountry={selectedCountry}
+                onPickerPress={() => setPickerVisible(true)}
               />
-            </View>
-            {errors.phone && (
-              <Text className="text-red-500 text-sm ml-1">
-                {errors.phone.message}
-              </Text>
             )}
-          </View>
+          />
 
           {/* Password Field */}
-          <View className="flex gap-2 mb-5">
-            <Label
-              nativeID="password"
-              htmlFor="password"
-              className="text-lg font-bold"
-            >
-              Password
-            </Label>
-            <Controller
-              name="password"
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  id="password"
-                  placeholder="Password"
-                  value={value}
-                  onChangeText={onChange}
-                  onFocus={() => setFocusedPassword(true)}
-                  onBlur={() => {
-                    setFocusedPassword(false);
-                    onBlur();
-                  }}
-                  secureTextEntry
-                  textContentType="password"
-                  autoComplete="password"
-                  className={`${focusedPassword ? "border-primary-600 border-[1.5px]" : errors.password ? "border-red-500 border-[1.5px]" : "border-zinc-300"} ${styles.textInput} placeholder:text-zinc-400`}
-                />
-              )}
-            />
-            {errors.password && (
-              <Text className="text-red-500 text-sm ml-1">
-                {errors.password.message}
-              </Text>
+          <Controller
+            name="password"
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <CustomInput
+                label="Password"
+                placeholder="Password"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                error={errors.password?.message}
+                isPassword
+                autoComplete="password"
+              />
             )}
-          </View>
+          />
 
           {/* Terms Checkbox */}
           <View className="mb-8">
@@ -297,22 +199,7 @@ const Register = () => {
           Sign Up
         </CustomButton>
         {/* ---------------------------------- */}
-        <View className="flex-row items-center justify-between gap-2 mt-5 mb-7">
-          <View className="h-[1px] bg-zinc-200 flex-1" />
-          <Text>OR</Text>
-          <View className="h-[1px] bg-zinc-200 flex-1" />
-        </View>
-
-        {/* ---------------------------------- */}
-        <View className="flex-row items-center justify-center mb-7 gap-7">
-          <TouchableOpacity className="bg-white rounded-full p-2">
-            <Image source={google_logo} className="size-10" />
-          </TouchableOpacity>
-
-          <TouchableOpacity className="bg-white rounded-full p-2">
-            <Image source={facebook_logo} className="size-10" />
-          </TouchableOpacity>
-        </View>
+        <SocialAuth />
         {/* ---------------------------------- */}
         <View>
           <Text className="text-zinc-400 text-center">
