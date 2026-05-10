@@ -22,4 +22,9 @@ export const ENDPOINTS = {
     PROFILE: "/user/profile",
     PROFILE_IMAGE: "/user/profile/image",
   },
+  MESSAGES: {
+    CONVERSATIONS: "chat/conversations",
+    MESSAGES: "chat/messages",
+    CREATE_CONVERSATION: "chat/conversation",
+  },
 };
