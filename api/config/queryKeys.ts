@@ -19,4 +19,9 @@ export const QUERY_KEYS = {
     PROFILE: "profile",
     PROFILE_IMAGE: "profile-image",
   },
+  MESSAGES: {
+    CONVERSATIONS: "conversations",
+    MESSAGES: "messages",
+    CREATE_CONVERSATION: "create-conversation",
+  },
 };
