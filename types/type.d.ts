@@ -140,11 +140,19 @@ export interface Agent {
 }
 
 export interface User {
-  _id: number;
+  _id: string;
   name: string;
-  lastMessage: string;
-  messageTime: Date;
+  email: string;
+  location: {
+    type: "Point";
+    coordinates: [number, number]; // [longitude, latitude]
+  };
+  profession?: string;
+  phone: string;
   image: string;
+  isVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface NotificationProps {
@@ -288,3 +296,17 @@ export type resetPasswordInput = {
   newPassword: string;
   confirmPassword: string;
 };
+
+//==============================================
+// zustand store types
+
+export interface UserState {
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  setUser: (user: User) => void;
+  setToken: (token: string) => void;
+  setAuth: (user: User, token: string) => void;
+  updateUser: (updates: Partial<User>) => void;
+  clearUser: () => void;
+}
