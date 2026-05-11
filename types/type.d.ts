@@ -33,7 +33,7 @@ export interface screenWrapperProps {
 
 export interface CheckboxWithLabelProps {
   label: string;
-  classNameContainer: string;
+  classNameContainer?: string;
   classNameLabel?: string;
   classNameCheckBox?: string;
   styleLabel?: object;
@@ -51,7 +51,7 @@ export interface CustomButtonProps {
 }
 
 export interface SearchProps {
-  handleOpenFilterModal: () => void;
+  handleOpenFilterModal?: () => void;
 }
 
 export interface BottomSheetCompProps {
@@ -93,11 +93,15 @@ export interface BookingCardProps {
 }
 
 export interface ChatPreviewProps {
-  _id: string | number;
-  name: string;
-  lastMessage: string;
-  messageTime: string | number | Date;
-  image: React.ReactNode | ImageSourceProp | string | number;
+  _id: string;
+  lastMessage: {
+    message: string;
+    video?: string;
+    isRead?: boolean;
+    image?: React.ReactNode | ImageSourceProp | string | number;
+  };
+  updatedAt: string | number | Date;
+  participants: User[];
 }
 
 export interface FilterProps {
