@@ -4,6 +4,9 @@ import { useCallback, useEffect, useState } from "react";
 import * as Location from "expo-location";
 // toast imports
 import Toast from "react-native-toast-message";
+// api imports
+import { useSetUserLocation } from "@/api/hooks/useUser";
+// import user store
 
 //=============================================
 
@@ -14,6 +17,9 @@ const useUserLocation = () => {
   const [gpsLocation, setGpsLocation] = useState<
     Location.LocationObject | number[] | null
   >(null);
+
+  //hooks
+  const { mutateLocation } = useSetUserLocation();
 
   // toast function
   const showToast = useCallback((message: string) => {
@@ -47,6 +53,10 @@ const useUserLocation = () => {
         return;
       }
 
+      mutateLocation({
+        longitude: location.coords.longitude,
+        latitude: location.coords.latitude,
+      });
       setGpsLocation(location);
       setLatitude(location.coords.latitude);
       setLongitude(location.coords.longitude);
@@ -74,6 +84,7 @@ const useUserLocation = () => {
     longitude,
     loading,
     gpsLocation,
+    mutateLocation,
     getCurrentLocation,
     setLatitude,
     setLongitude,
