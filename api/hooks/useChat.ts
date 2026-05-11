@@ -17,3 +17,59 @@ export const useCreateConversation = () => {
     isSuccess,
   };
 };
+
+//=========================================
+
+export const useGetConversations = () => {
+  const { user } = useUserStore();
+
+  const { data, isError, isPending, isSuccess, isFetched, refetch } =
+    useGetHook(
+      ENDPOINTS.MESSAGES.CONVERSATIONS,
+      [QUERY_KEYS.MESSAGES.CONVERSATIONS, user?._id],
+      undefined,
+      {
+        refetchOnMount: "always",
+        staleTime: 0,
+      },
+    );
+
+  const conversations = data?.data;
+
+  return {
+    conversations,
+    isError,
+    isPending,
+    isSuccess,
+    isFetched,
+    refetch,
+  };
+};
+
+//=========================================
+
+export const useGetMessages = (conversationId: string) => {
+  const { data, isError, isPending, isSuccess, isFetched, refetch } =
+    useGetHook(
+      `${ENDPOINTS.MESSAGES.MESSAGES}/${conversationId}`,
+      [QUERY_KEYS.MESSAGES.MESSAGES, conversationId],
+      undefined,
+      {
+        staleTime: 0,
+        refetchOnMount: "always",
+      },
+    );
+
+  const messages = data?.data?.messages;
+  const receiver = data?.data?.receiver;
+
+  return {
+    messages,
+    receiver,
+    isError,
+    isPending,
+    isSuccess,
+    isFetched,
+    refetch,
+  };
+};
