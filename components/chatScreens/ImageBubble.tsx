@@ -1,6 +1,6 @@
 // react imports
 import React, { useState } from "react";
-import { Image, TouchableOpacity } from "react-native";
+import { ActivityIndicator, Image, TouchableOpacity, View } from "react-native";
 // hooks imports
 import useMediaDimensions from "@/hooks/useMediaDimensions";
 // context for image preview
@@ -12,7 +12,7 @@ import { size } from "@/types/type";
 const ImageBubble = React.memo(
   (props: any) => {
     const [size, setSize] = useState<null | size>(null);
-    const { image } = props.currentMessage;
+    const { image, status } = props.currentMessage;
     const { showImage } = useImageContext();
 
     // get image dimensions (hook)
@@ -25,22 +25,49 @@ const ImageBubble = React.memo(
 
     if (!imageURL || !size) return null;
 
+    const isLoading = status === "uploading" || status === "pending";
+
     return (
-      <TouchableOpacity onPress={() => showImage(imageURL)} className="mb-2">
-        <Image
-          source={{ uri: imageURL }}
-          style={{
-            width: size.width,
-            height: size.height,
-            borderRadius: 10,
-          }}
-          resizeMode="stretch"
-        />
+      <TouchableOpacity
+        onPress={() => !isLoading && showImage(imageURL)}
+        className="mb-2"
+        disabled={isLoading}
+      >
+        <View style={{ width: size.width, height: size.height }}>
+          <Image
+            source={{ uri: imageURL }}
+            style={{
+              width: size.width,
+              height: size.height,
+              borderRadius: 10,
+              opacity: isLoading ? 0.5 : 1,
+            }}
+            resizeMode="stretch"
+          />
+          {isLoading && (
+            <View
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "rgba(0,0,0,0.2)",
+                borderRadius: 10,
+              }}
+            >
+              <ActivityIndicator size="large" color="#ffffff" />
+            </View>
+          )}
+        </View>
       </TouchableOpacity>
     );
   },
   (prevProps, nextProps) =>
-    prevProps.currentMessage.image === nextProps.currentMessage.image,
+    prevProps.currentMessage.image === nextProps.currentMessage.image &&
+    prevProps.currentMessage.status === nextProps.currentMessage.status,
 );
 
 ImageBubble.displayName = "ImageBubble";

@@ -8,15 +8,11 @@ import { useRouter } from "expo-router";
 
 //=============================================
 
-const ChatPreview = ({
-  _id,
-  name,
-  lastMessage,
-  messageTime,
-  image,
-}: ChatPreviewProps) => {
+const ChatPreview = (props: ChatPreviewProps) => {
+  const { _id, updatedAt, lastMessage, participants } = props;
+  const { name, image } = participants[0];
+  const date = formatChatTime(updatedAt);
   const router = useRouter();
-  const date = formatChatTime(messageTime);
 
   return (
     <TouchableOpacity
@@ -33,7 +29,13 @@ const ChatPreview = ({
               {name}
             </Text>
             <Text className="text-zinc-400" numberOfLines={1}>
-              {lastMessage}
+              {lastMessage?.message
+                ? lastMessage.message
+                : lastMessage?.image
+                  ? "[Image]"
+                  : lastMessage?.video
+                    ? "[Video]"
+                    : "No Messages Yet"}
             </Text>
           </View>
         </View>
