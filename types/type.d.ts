@@ -234,6 +234,11 @@ export interface EmptyStateProps {
   imageSize?: number;
 }
 
+export interface OptionProps {
+  Icon: React.ComponentType<any>;
+  optionName: string;
+}
+
 export interface LocationFullDetailsProps {
   visible: boolean;
   onClose: () => void;
