@@ -8,7 +8,12 @@ import { SocketContextType, SocketProviderProps } from "@/types/type";
 
 const socketContext = createContext<SocketContextType | null>(null);
 
-const URL = process.env.BACKEND_URL || "http://192.168.1.8:3000";
+const Environment = process.env.NODE_ENV;
+
+const URL =
+  Environment === "development"
+    ? process.env.EXPO_PUBLIC_BACKEND_URL_DEV
+    : process.env.EXPO_PUBLIC_BACKEND_URL;
 
 //================================================
 
