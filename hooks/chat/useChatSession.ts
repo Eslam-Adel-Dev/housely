@@ -17,6 +17,8 @@ export const useChatSession = (chatId: string) => {
 
   const { socketEmitter } = useChatSocket({ 
     chatId, 
+    currentUserId: user?._id,
+    receiver,
     addMessage, 
     updateMessage 
   });
