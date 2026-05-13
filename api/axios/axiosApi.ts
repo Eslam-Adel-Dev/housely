@@ -8,9 +8,15 @@ const BASE_URL = "http://192.168.1.8:3000/api";
 //=========================================
 // Axios Instance
 
+const Environment = process.env.NODE_ENV;
+
+const URL =
+  Environment === "development"
+    ? process.env.EXPO_PUBLIC_BACKEND_URL_DEV
+    : process.env.EXPO_PUBLIC_BACKEND_URL;
+
 const axiosInstance = axios.create({
-  baseURL:
-    process.env.NODE_ENV === "development" ? BASE_URL : process.env.BACKEND_URL,
+  baseURL: `${URL}/api`,
   headers: {
     "Content-Type": "application/json",
   },
