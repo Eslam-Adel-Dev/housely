@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { io } from "socket.io-client";
 // types import
 import { storage } from "@/lib/mmkvStorage";
+import { useUserStore } from "@/store/userStore";
 import { SocketContextType, SocketProviderProps } from "@/types/type";
 
 //================================================
@@ -19,6 +20,7 @@ const URL =
 
 const SocketProvider = ({ children }: SocketProviderProps) => {
   const [isConnected, setIsConnected] = useState(false);
+  const { token } = useUserStore();
 
   // Create a single, stable socket instance
   const socket = useMemo(() => {
@@ -44,14 +46,29 @@ const SocketProvider = ({ children }: SocketProviderProps) => {
       setIsConnected(false);
     }
 
+    function onConnectError(err: any) {
+      console.log("Socket Connection Error ❌", err.message);
+    }
+
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
+    socket.on("connect_error", onConnectError);
 
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
+      socket.off("connect_error", onConnectError);
     };
   }, [socket]);
+
+  // Update token when it changes in the store
+  useEffect(() => {
+    if (token) {
+      console.log("Updating Socket Auth Token...");
+      socket.auth = { token };
+      socket.disconnect().connect();
+    }
+  }, [token, socket]);
 
   // Memoize the context value
   const socketObj = useMemo(
